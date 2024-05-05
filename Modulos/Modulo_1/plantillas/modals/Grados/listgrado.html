@@ -1,0 +1,68 @@
+{% extends "index.html" %}
+{% load static %}
+
+{% block buscador %}
+<form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search"
+method="GET" action="{% url 'buscar_grado' %}">
+  <div class="input-group">
+    <input type="text" class="form-control bg-light border-0 small" placeholder="Buscar..." name="buscar" value="{{ request.GET.buscar }}">
+    <div class="input-group-append">
+      <button class="btn btn-primary" type="submit">
+        <i class="fas fa-search fa-sm"></i>
+      </button>
+    </div>
+  </div>
+</form>
+{% endblock buscador %}
+
+{% block content %}
+  {% if messages %}
+  <div class="alert-container">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  <div class="container py-4">
+    <h2 class="text-center mb-4">Listado de Grados</h2>
+    <div class="row mb-3">
+      <div class="col-md-6"> <!-- Cambiado el tamaño de la columna a 6 -->
+        <a href="{% url 'agregar_grado' %}" class="btn btn-primary">Agregar Grado</a>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead class="thead-dark">
+              <tr>
+                <th>Codigo</th>
+                <th>Nombre</th>
+                <th>Año Lectivo</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for grado in grados %}
+              <tr>
+                <td>{{ grado.Codigo }}</td>
+                <td>{{ grado.Nombre }}</td>
+                <td>{{ grado.Aniolectivo }}</td>
+                <td>
+                  <a href="{% url 'modificar_grado' grado.Codigo %}" class="btn btn-info btn-sm">Modificar</a>
+                  <a href="#" class="btn btn-danger btn-sm">Eliminar</a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

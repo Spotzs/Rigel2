@@ -1,0 +1,30 @@
+{% extends "index.html" %}
+
+{% block title %}Formulario de Contacto{% endblock %}
+
+{% block content %}
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h1 class="card-title text-center mb-4">Contáctenos</h1>
+                    <form action="/contactar/" method="POST">{% csrf_token %}
+                        <div class="form-group">
+                            <label>Asunto</label>
+                            <input type="text" name="txtAsunto" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" name="txtEmail" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>Mensaje</label>
+                            <textarea name="txtMensaje" rows="5" class="form-control" style="resize: none;"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Enviar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

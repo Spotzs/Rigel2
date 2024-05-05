@@ -1,0 +1,308 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>BookSoft 2020 - {% block titulo %}Inicio{% endblock titulo %}</title>
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="{% static 'img/icon.png' %}" type="image/ico" />
+
+  <!-- Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+
+  <!-- Custom styles for this template -->
+
+
+  <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body id="page-top">
+
+  <!-- Page Wrapper -->
+  <div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+      <!-- Sidebar - Brand -->
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
+        <div class="sidebar-brand-icon rotate-n-15">
+          <i class="fas fa-book-open"></i>
+        </div>
+        <div class="sidebar-brand-text mx-2">Punto Asis <sup>2024</sup></div>
+      </a>
+
+      <!-- Divider -->
+      <hr class="sidebar-divider my-0">
+
+      <!-- Sidebar Navigation Items -->
+      <li class="nav-item active">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseClientes" aria-expanded="true" aria-controls="collapseClientes">
+          <i class="fas fa-school"></i>
+          <span>Clientes</span>
+        </a>
+        <div id="collapseClientes" class="collapse" aria-labelledby="headingClientes" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Opciones:</h6>
+            <a class="collapse-item" href="{% url 'listado_estudiante' %}">Estudiantes</a>
+            <a class="collapse-item" href="{% url 'listado_profesor' %}">Profesores</a>
+            <a class="collapse-item" href="#">Padres</a>
+          </div>
+        </div>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePersonal" aria-expanded="true" aria-controls="collapsePersonal">
+          <i class="fas fa-school"></i>
+          <span>Personal</span>
+        </a>
+        <div id="collapsePersonal" class="collapse" aria-labelledby="headingPersonal" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Opciones:</h6>
+            <a class="collapse-item" href="{% url 'listado_empleado' %}">Empleados</a>
+            <a class="collapse-item" href="#">Staff</a>
+          </div>
+        </div>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProductos" aria-expanded="true" aria-controls="collapseProductos">
+          <i class="fas fa-school"></i>
+          <span>Productos</span>
+        </a>
+        <div id="collapseProductos" class="collapse" aria-labelledby="headingProductos" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Opciones:</h6>
+            {% if perms.Modulo_1.view_producto %}
+            <a class="collapse-item" href="{% url 'listado_producto' %}">Productos</a>
+            {% endif %}
+            <a class="collapse-item" href="{% url 'listado_proveedor' %}">Proveedores</a>
+            <a class="collapse-item" href="#">Año Lectivo</a>
+          </div>
+        </div>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseVentas" aria-expanded="true" aria-controls="collapseVentas">
+          <i class="fas fa-school"></i>
+          <span>Ventas</span>
+        </a>
+        <div id="collapseVentas" class="collapse" aria-labelledby="headingVentas" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Opciones:</h6>
+            <a class="collapse-item" href="{% url 'listado_pedido' %}">Pedidos</a>
+            <a class="collapse-item" href="#">Proveedores</a>
+            <a class="collapse-item" href="#">Año Lectivo</a>
+          </div>
+        </div>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseColegio" aria-expanded="true" aria-controls="collapseColegio">
+          <i class="fas fa-school"></i>
+          <span>Colegio</span>
+        </a>
+        <div id="collapseColegio" class="collapse" aria-labelledby="headingColegio" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Opciones:</h6>
+            <a class="collapse-item" href="{% url 'listado_colegio' %}">Colegio</a>
+            <a class="collapse-item" href="{% url 'listado_grado' %}">Grados</a>
+            <a class="collapse-item" href="{% url 'listado_aniolectivo'%}">Año Lectivo</a>
+          </div>
+        </div>
+      </li>
+      <hr class="sidebar-divider my-0">
+
+      <!-- Sidebar Logout -->
+      <li class="nav-item active">
+        <a class="nav-link" href="{% url 'login' %}">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Cerrar Sesión</span>
+        </a>
+      </li>
+    </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+      <!-- Main Content -->
+      <div id="content">
+
+        <!-- Topbar -->
+        <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+          <!-- Sidebar Toggle (Topbar) -->
+          <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+            <i class="fa fa-bars"></i>
+          </button>
+
+          {% block buscador %}
+          <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+            <div class="input-group">
+              <input type="text" class="form-control bg-light border-0 small" placeholder="Buscar..." aria-label="Search" aria-describedby="basic-addon2">
+              <div class="input-group-append">
+                <button class="btn btn-primary" type="button">
+                  <i class="fas fa-search fa-sm"></i>
+                </button>
+              </div>
+            </div>
+          </form>
+          {% endblock buscador %}
+
+          <!-- Topbar Navbar -->
+          <ul class="navbar-nav ml-auto">
+
+            <!-- Shopping Cart -->
+            <li class="nav-item dropdown no-arrow mx-1">
+              <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-shopping-cart"></i>
+                <!-- Counter - Shopping Cart -->
+                <span class="badge badge-danger badge-counter">{{ carrito.count }}</span>
+              </a>
+              <!-- Shopping Cart Dropdown -->
+              <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="messagesDropdown">
+                <h6 class="dropdown-header">
+                  Tus Pedidos  <i class="fas fa-shopping-cart"></i>
+                </h6>
+                {% for item in carrito %}
+                <a class="dropdown-item d-flex align-items-center" href="{% url 'libreria:pedidos_cliente' user.id %}">
+                  <div class="dropdown-list-image mr-3">
+                    <img class="rounded-circle" src="/media/{{ item.isbn.portada }}" alt="">
+                    <div class="status-indicator bg-success"></div>
+                  </div>
+                  <div class="font-weight-bold">
+                    <div class="text-truncate">{{ item.isbn.titulo }}</div>
+                    <div class="small text-gray-500">Valor: ${{ item.valor }} · Fecha Pedido: {{ item.fecha_pedido }}</div>
+                  </div>
+                </a>
+                {% empty %}
+                <div class="text-truncate">No tienes pedidos. <a href="#">Agregar Pedido</a></div>
+                {% endfor %}
+              </div>
+            </li>
+
+            <!-- Messages -->
+            <li class="nav-item dropdown no-arrow mx-1">
+              <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-envelope fa-fw"></i>
+                <!-- Counter - Messages -->
+                <span class="badge badge-danger badge-counter">7</span>
+              </a>
+              <!-- Messages Dropdown -->
+              <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="messagesDropdown">
+                <h6 class="dropdown-header">
+                  Mensajes Internos
+                </h6>
+                <!-- Sample Messages -->
+                <!-- Replace this section with dynamic content -->
+                <a class="dropdown-item d-flex align-items-center" href="#">
+                  <div class="dropdown-list-image mr-3">
+                    <img class="rounded-circle" src="https://source.unsplash.com/fn_BT9fwg_E/60x60" alt="">
+                    <div class="status-indicator bg-success"></div>
+                  </div>
+                  <div class="font-weight-bold">
+                    <div class="text-truncate">¡Hola! Me pregunto si me pueden ayudar con un problema que he tenido con el envío.</div>
+                    <div class="small text-gray-500">Emily Fowler · 58m</div>
+                  </div>
+                </a>
+                <!-- End of Sample Messages -->
+                <a class="dropdown-item text-center small text-gray-500" href="#">Read More Messages</a>
+              </div>
+            </li>
+
+            <!-- User Information -->
+            <li class="nav-item dropdown no-arrow">
+              <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ user.nombre }} {{ user.apellido }}</span>
+                {% if user.imagen == "" %}
+                <img class="img-profile rounded-circle" src="/media/perfil/avatar.png">
+                {% else %}
+                <img class="img-profile rounded-circle" src="#">
+                {% endif %}
+              </a>
+              <!-- User Dropdown - Menu -->
+              <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                <a class="dropdown-item" href="#">
+                  <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Perfil
+                </a>
+                <a class="dropdown-item" href="#">
+                  <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Configuraciones
+                </a>
+                <div class="dropdown-divider"></div>
+                {% if user.nombre %}
+                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                  <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                  Cerrar Sesión
+                </a>
+                {% endif %}
+              </div>
+            </li>
+
+          </ul>
+
+        </nav>
+        <!-- End of Topbar -->
+
+        {% block content %}
+        <div class="container-fluid">
+          <!-- Content Goes Here -->
+        </div>
+        {% endblock content %}
+
+      </div>
+      <!-- End of Main Content -->
+
+      <!-- Footer -->
+      <footer class="sticky-footer bg-white">
+        <div class="container my-auto">
+          <div class="text-center">
+            <span>Copyright &copy; BookSoft 2020</span>
+          </div>
+        </div>
+      </footer>
+      <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+
+  <!-- Scroll to Top Button-->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+  <!-- Bootstrap core JavaScript-->
+  <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+  <!-- Core plugin JavaScript -->
+
+  <!-- Custom scripts for all pages-->
+  <script src="{% static 'Js/jquery-3.5.0.min.js' %}"></script>
+  <script src="{% static 'Js/sb-admin-2.min.js' %}"></script>
+
+  <!-- Additional custom scripts -->
+  {% block extrajs %}
+  <script src="{% static 'Js/modals/modals.js' %}"></script>
+  
+  {% endblock extrajs %}
+
+</body>
+
+</html>

@@ -1,0 +1,7 @@
+<form method="post" action="{% url 'exportar_productos_csv' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-success btn-sm mb-3">
+        <i class="fas fa-file-csv mr-1"></i> Exportar a CSV
+    </button>
+</form>

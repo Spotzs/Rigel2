@@ -1,0 +1,34 @@
+{% extends 'index.html' %}
+
+{% block title %}Crear Año Lectivo - Rigel{% endblock %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h1 class="card-title text-center mb-4">Crear Año</h1>
+                {% if mensaje %}
+                <div class="alert alert-{{ tipo_alerta }}" role="alert">
+                    {{ mensaje }}
+                </div>
+                {% endif %}
+                <form method="post" class="form" id="student-form">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <div class="form-group d-flex justify-content-between mt-4">
+                        <a href="#" onclick="window.history.back();" class="btn btn-secondary mr-2">
+                            Volver
+                        </a>
+                        <input type="reset" value="Cancelar" class="btn btn-secondary">
+                        &nbsp;&nbsp;
+                        <button type="submit" class="btn btn-primary btn-block">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

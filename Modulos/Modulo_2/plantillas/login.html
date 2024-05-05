@@ -1,0 +1,92 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'Css/styles.css' %}">
+    <!-- Agregar SweetAlert CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <title>Modern Login Page | AsmrProg</title>
+</head>
+<body>
+    {% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endfor %}
+{% endif %}
+
+    <div class="container" id="container">
+        <div class="form-container sign-up">
+            <form method="post" action="{% url 'register' %}">
+                {% csrf_token %}
+                <h1>Registrarse</h1>
+                {{ registro_form.username }}
+                {{ registro_form.email }}
+                {{ registro_form.first_name }}
+                {{ registro_form.last_name }}
+                {{ registro_form.password1 }}
+                {{ registro_form.password2 }}
+                <button type="submit">Crear</button>
+            </form>
+        </div>
+        
+        <div class="form-container sign-in">
+            <form method="post" action="{% url 'login' %}">
+                {% csrf_token %}
+                <h1>Inicia Sesión</h1>
+                <input type="text" placeholder="Username" name="username">
+                <input type="password" placeholder="Password" name="password">
+                <button type="submit">Ingresar</button>
+            </form>
+        </div>
+        <div class="toggle-container">
+            <div class="toggle">
+                <div class="toggle-panel toggle-left">
+                    <h1>Welcome Back!</h1>
+                    <p>Enter your personal details to use all of site features</p>
+                    <button class="hidden" id="login">Inicia Sesión</button>
+                </div>
+                <div class="toggle-panel toggle-right">
+                    <h1>Hola!</h1>
+                    <p>Register with your personal details to use all of site features</p>
+                    <button class="hidden" id="register">Registrarse</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="{% static 'Js/script.js' %}"></script>
+    <!-- Agregar script para mostrar SweetAlert -->
+    <script>
+        // Función para mostrar SweetAlert
+        document.addEventListener("DOMContentLoaded", function() {
+        // Función para mostrar SweetAlert
+        function showSweetAlert() {
+            Swal.fire({
+                icon: 'error',
+                title: 'Acceso denegado',
+                text: 'No tienes permiso para realizar esta acción.',
+                confirmButtonText: 'Entendido'
+            });
+        }
+
+        // Verificar si la URL contiene el parámetro 'denied' que indica acceso denegado
+        const urlParams = new URLSearchParams(window.location.search);
+        const denied = urlParams.get('denied');
+        if (denied) {
+            // Si se encuentra el parámetro 'denied', mostrar el SweetAlert
+            showSweetAlert();
+        }
+    });
+    
+    
+    </script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+{% extends 'index.html' %}
+
+{% block title %}
+Modificar Estudiante - Rigel
+{% endblock %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h2>Editar Estudiante</h2>
+
+                <form action="" method="POST" enctype="multipart/form-data" class="card p-3 mt-5 form">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+
+                    <br>
+                    <div class="d-flex justify-content-end">
+                        <input type="reset" value="Cancelar" class="btn btn-secondary">
+                        &nbsp;&nbsp;
+                        <input type="submit" value="Editar" class="btn btn-primary">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

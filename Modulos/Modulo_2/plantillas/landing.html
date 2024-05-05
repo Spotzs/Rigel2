@@ -1,0 +1,170 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'Css/principal.css' %}">
+    <title>Modern Login Page | AsmrProg</title>
+
+</head>
+<body>
+  <header class="main-header">
+    <div class="container container--flex">
+      <div class="main-header__container">
+        <h1 class="main-header__title">GOGGLES</h1>
+        <span class="icon-menu" id="btn-menu"><i class="fas fa-bars"></i></span>
+        <nav class="main-nav" id="main-nav">
+          <ul class="menu">
+            <li class="menu__item"><a href="" class="menu__link">HOME</a></li>
+            <li class="menu__item"><a href="" class="menu__link">ABOUT</a></li>
+            <li class="menu__item"><a href="" class="menu__link">FEATURES</a></li>
+            <li class="menu__item"><a href="" class="menu__link">SHOP</a></li>
+            <li class="menu__item"><a href="" class="menu__link">CONTACT</a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="main-header__container">
+        <span class="main-header__txt">Need Help</span>
+        <p class="main-header__txt"><i class="fas fa-phone"></i> Call 12345678099</p>
+      </div>
+      <div class="main-header__container">
+        <a href="" class="main-header__link"><i class="fas fa-user"></i></a>
+        <a href="" class="main-header__btn">My cart <i class="fas fa-shopping-cart"></i></a>
+        <input type="search" class="main-header__input" placeholder="Buscar productos"><i class="fas fa-search"></i>
+      </div>
+    </div>
+  </header>
+  <div class="container-slider">
+    
+    <div class="slider" id="slider">
+      <div class="slider__section">
+        <img src="https://images.pexels.com/photos/2097085/pexels-photo-2097085.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260" alt="" class="slider__img">
+        <div class="slider__content">
+          <h2 class="slider__title">Women’s eyewear</h2>
+          <p class="slider__txt">Cool summer sale 50% off</p>
+          <a href="" class="btn-shop">SHOP NOW</a>
+        </div>
+      </div>
+      <div class="slider__section">
+        <img src="https://images.pexels.com/photos/3414327/pexels-photo-3414327.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260" alt="" class="slider__img">
+        <div class="slider__content">
+          <h2 class="slider__title">Women’s eyewear</h2>
+          <p class="slider__txt">Cool summer sale 50% off</p>
+          <a href="" class="btn-shop">SHOP NOW</a>
+        </div>
+      </div>
+      <div class="slider__section">
+        <img src="https://images.pexels.com/photos/2846815/pexels-photo-2846815.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260" alt="" class="slider__img">
+        <div class="slider__content">
+          <h2 class="slider__title">Women’s eyewear</h2>
+          <p class="slider__txt">Cool summer sale 50% off</p>
+          <a href="" class="btn-shop">SHOP NOW</a>
+        </div>
+      </div>
+      <div class="slider__section">
+        <img src="https://snappygoat.com/b/e031d75f5c05484c31a2e3eb0dcc218b4268620a" alt="" class="slider__img">
+        <div class="slider__content">
+          <h2 class="slider__title">Men’s eyewear</h2>
+          <p class="slider__txt">Cool summer sale 50% off</p>
+          <a href="" class="btn-shop">SHOP NOW</a>
+        </div>
+      </div>
+    </div>
+    <div class="slider__btn slider__btn--right" id="btn-right">&#62;</div>
+    <div class="slider__btn slider__btn--left" id="btn-left">&#60;</div>
+  </div>
+  <main class="main">
+    <div class="container">
+      <h2 class="main-title">New Arrivals for you</h2>
+      <section class="container-products">
+        {% for producto in productos %}
+        <div class="product">
+            <img src="{{ producto.Imagen_Producto.url }}" alt="{{ producto.Nombre }}" class="product__img">
+            <div class="product__description">
+                <h3 class="product__title">{{ producto.Nombre }}</h3>
+                <span class="product__price">{{ producto.Precio }}</span>
+                <input type="number" class="cantidadProducto" min="1" value="1" id="input{{producto.pk}}">
+            </div>
+            <a href="#" onclick="agregarAlCarrito('{{ producto.pk }}', '{{ csrf_token}}');">
+                <i class="product__icon fas fa-cart-plus"></i>
+            </a>
+        </div>
+        {% endfor %}
+        
+      </section>
+      <section class="container__testimonials">
+        <h2 class="section__title">Testimonials</h2>
+        <h3 class="testimonial__title">Anamaria </h3>
+        <p class="testimonial__txt">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad, perferendis, animi! Numquam quasi similique, fuga sint. Nulla veritatis quia nemo, magni, necessitatibus impedit inventore, provident culpa repellat esse a quo.</p>
+      </section>
+    
+      <div class="container-editor">
+        <div class="editor__item">
+          <img src="https://pixnio.com/free-images/2017/05/31/2017-05-31-10-27-12.jpg" alt="" class="editor__img">
+          <p class="editor__circle">EXPRESS YOUR STYLE NOW</p>
+        </div>
+        <div class="editor__item">
+          <img src="https://images.pexels.com/photos/261856/pexels-photo-261856.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260" alt="" class="editor__img">
+          <p class="editor__circle">EXPRESS YOUR STYLE NOW</p>
+        </div>
+      </div>
+      <section class="container-tips">
+        <div class="tip">
+          <i class="far fa-hand-paper"></i> 
+          <h2 class="tip__title">Satisfaction Guaranteed</h2>
+          <p class="tip__txt">Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit</p>
+          <a href="" class="btn-shop">SHOP NOW</a>
+        </div>
+        <div class="tip">
+        <i class="fas fa-rocket"></i>
+          <h2 class="tip__title">Fast Shipping</h2>
+          <p class="tip__txt">Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.</p>
+          <a href="" class="btn-shop">SHOP NOW</a>
+        </div>
+        <div class="tip">
+          <i class="fas fa-cog"></i>
+          <h2 class="tip__title">UV Protection</h2>
+          <p class="tip__txt">Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.</p>
+          <a href="" class="btn-shop">SHOP NOW</a>
+        </div>
+      </section>
+    </div>
+  </main>
+  <footer class="main-footer">
+    
+    <div class="footer__section">
+      <h2 class="footer__title">About Us</h2>
+      <p class="footer__txt">Curabitur non nulla sit amet nislinit tempus convallis quis ac lectus. lac inia eget consectetur sed, convallis at tellus. Nulla porttitor accumsana tincidunt.</p>
+    </div>
+    <div class="footer__section">
+      <h2 class="footer__title">Location :</h2>
+      <p class="footer__txt">0926k 4th block building, king Avenue, New York City</p>
+      <h2 class="footer__title">Contact</h2>
+      <p class="footer__txt">Phone : +121 098 8907 9987</p>
+      <p class="footer__txt">Email : info@example.com</p>
+    </div>
+    <div class="footer__section">
+      <h2 class="footer__title">Quick Links</h2>
+      <a href="" class="footer__link">Home</a>
+      <a href="" class="footer__link">About</a>
+      <a href="" class="footer__link">Error</a>
+      <a href="" class="footer__link">Shop</a>
+      <a href="" class="footer__link">Contact Us</a>
+    </div>
+    <div class="footer__section">
+      <h2 class="footer__title">Sign up for your offers</h2>
+      <p class="footer__txt">By subscribing to our mailing list you will always get latest news and updates from us.</p>
+      <input type="email" class="footer__input" placeholder="Enter your email">
+    </div>
+    <p class="copy">© 2021 Goggles. All Rights Reserved | Design by W3Layouts</p>
+  </footer>
+  
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="{% static 'Js/principal.js' %}"></script>
+ 
+<body>
+</html>
