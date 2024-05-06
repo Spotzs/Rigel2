@@ -9,11 +9,9 @@ from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.auth import User
 
 from .forms import (
-    EstudianteForm,
-    ProfesorForm,
+    ClienteForm,
     ProductoForm,
     ColegioForm,
     GradoForm,
@@ -22,7 +20,7 @@ from .forms import (
     PedidoForm,
     EmpleadoForm
 )
-from .models import Estudiante, Profesor, Producto, Colegio, Grado, Aniolectivo, Proveedor, Pedido, DetallePedido, Empleado
+from .models import Cliente, Producto, Colegio, Grado, Aniolectivo, Proveedor, Pedido, DetallePedido, Empleado
 from django.views.generic import ListView, View
 
 import csv
@@ -263,7 +261,7 @@ def listado_empleado(request):
 @permission_required('Modulo_1.add_estudiante', login_url='/login/')
 def agregar_estudiante(request):
     if request.method == 'POST':
-        form = EstudianteForm(request.POST, files=request.FILES)
+        form = ClienteForm(request.POST, files=request.FILES)
         if form.is_valid():
             form.save()
             messages.success(request, "Estudiante agregado correctamente")
@@ -271,7 +269,7 @@ def agregar_estudiante(request):
         else:
             messages.error(request, "Error al agregar el estudiante")
     else:
-        form = EstudianteForm()
+        form = ClienteForm()
     
     return render(request, 'agregarestudiante.html', {'form': form})
 
@@ -732,38 +730,41 @@ def buscar_pedido(request):
 
     return render(request, 'listpedidos.html', context)
 
-def agregar_alcarrito(request):
 
-    cliente_id=request.user.id
+def agregar_alcarrito(request):
+    cliente_id = request.user.id
     cantidad = int(request.POST.get('cantidad'))
     producto_id = int(request.POST.get('producto_id'))
-    # {
-    #     "cliente_id": 1,
-    #     "Id_producto": 1,
-    #     "Cantidad": 1
+    producto = get_object_or_404(Producto, pk=producto_id)
 
-    # }
-    pedido = Pedido.objects.filter(Estado_pedido='PENDIENTE', Estudiante_id=cliente_id).first()
+    import pdb; pdb.set_trace(); print('Prueba 1')
+    pedido = Pedido.objects.filter(
+        estado='PENDIENTE', cliente_id=cliente_id).first()
+    import pdb; pdb.set_trace(); print('Prueba 2')
     if not pedido:
         pedido = Pedido.objects.create(
-            Estudiante_id=cliente_id,
-            Estado_pedido='PENDIENTE'
-
+            cliente=cliente_id,
+            estado='PENDIENTE'
         )
-    detalle_pedido = DetallePedido.objects.filter(Pedido=pedido, Producto_id=producto_id).first()
-    import pdb; pdb.set_trace()
+    import pdb; pdb.set_trace(); print('Prueba 3')
+    detalle_pedido = DetallePedido.objects.filter(
+        pedido=pedido, producto=producto_id).first()
+    precio_total = producto.precio * cantidad
+
+    import pdb; pdb.set_trace(); print('Prueba 4')
     if not detalle_pedido:
-         detalle_pedido = DetallePedido.objects.create(
-            Pedido=pedido,
-            Producto_id=producto_id,
-            Cantidad=cantidad,
+        detalle_pedido = DetallePedido.objects.create(
+            pedido=pedido,
+            producto=producto_id,
+            cantidad=cantidad,
+            precio_total=precio_total
         )
     else:
-        detalle_pedido.Cantidad = cantidad
+        detalle_pedido.cantidad = cantidad
+        detalle_pedido.precio_total = precio_total
         detalle_pedido.save()
 
-    producto = get_object_or_404(Producto, Id_producto=producto_id)
-    producto_nombre = producto.Nombre  # Guarda el nombre del producto antes de eliminarlo
+    producto_nombre = producto.nombre  # Guarda el nombre del producto antes de eliminarlo
     # SweetAlert message
     swal_data = {
         'title': '¡Producto agregado al carrito!',

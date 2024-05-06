@@ -34,13 +34,13 @@ class PrecioProductoListFilter(admin.SimpleListFilter):
 
 # Acciones personalizadas
 def marcar_disponible(modeladmin, request, queryset):
-    queryset.update(Disponible=True)
+    queryset.update(disponible=True)
 
 marcar_disponible.short_description = "Marcar como disponible"
 
 
 def marcar_no_disponible(modeladmin, request, queryset):
-    queryset.update(Disponible=False)
+    queryset.update(disponible=False)
 
 marcar_no_disponible.short_description = "Marcar como no disponible"
 
@@ -65,30 +65,30 @@ class ColegioAdmin(admin.ModelAdmin):
 
 @admin.register(Producto)
 class ProductoAdmin(admin.ModelAdmin):
-    list_display = ['Nombre', 'Proveedor', 'Stock', 'Precio', 'Disponible', 'get_precio_display']
-    search_fields = ['Nombre', 'Proveedor__Nombre', 'Descripcion', '^Nombre']  # Búsqueda avanzada
-    list_filter = ['Proveedor', 'Disponible', PrecioProductoListFilter]
-    ordering = ['Nombre']
+    list_display = ['nombre', 'proveedor', 'stock', 'precio', 'disponible', 'get_precio_display']
+    search_fields = ['nombre', 'proveedor__nombre', 'descripcion', '^nombre']  # Búsqueda avanzada
+    list_filter = ['proveedor', 'disponible', PrecioProductoListFilter]
+    ordering = ['nombre']
     actions = [marcar_disponible, marcar_no_disponible]
-    list_editable = ['Stock', 'Disponible']
+    list_editable = ['stock', 'disponible']
     list_per_page = 20
 
     def get_precio_display(self, obj):
-        return f'${obj.Precio:.2f}'
+        return f'${obj.precio:.2f}'
 
     get_precio_display.short_description = 'Precio'
 
 
 @admin.register(Pedido)
 class PedidoAdmin(admin.ModelAdmin):
-    list_display = ['id', 'Estudiante', 'Profesor', 'Empleado', 'Categoria', 'Fecha', 'Estado_pedido', calcular_total_pedido]
-    search_fields = ['id', 'Estudiante__Nombres', 'Profesor__Nombres']
-    list_filter = ['Estado_pedido']
-    ordering = ['-Fecha']
-    readonly_fields = ['Fecha']
+    list_display = ['id', 'cliente', 'empleado', 'categoria', 'fecha', 'estado', calcular_total_pedido]
+    search_fields = ['id', 'cliente__firt_name']
+    list_filter = ['estado']
+    ordering = ['-fecha']
+    readonly_fields = ['fecha']
     inlines = [DetallePedidoInline]
-    raw_id_fields = ['Estudiante', 'Profesor', 'Empleado']
-    autocomplete_fields = ['Categoria']
+    raw_id_fields = ['cliente', 'empleado']
+    autocomplete_fields = ['categoria']
 
 @admin.register(Aniolectivo)
 class AniolectivoAdmin(admin.ModelAdmin):
@@ -102,67 +102,60 @@ class GradoAdmin(admin.ModelAdmin):
     search_fields = ['Nombre']
     ordering = ['Nombre']
 
-@admin.register(Estudiante)
-class EstudianteAdmin(admin.ModelAdmin):
-    list_display = ['Nombres', 'Apellido', 'Genero', 'Grado', 'Telefono', 'Correo_electronico', 'Direccion', 'Activo', 'Alergias']
-    search_fields = ['Nombres', 'Apellido']
-    list_filter = ['Activo', 'Grado']
-    ordering = ['Apellido', 'Nombres']
-
-@admin.register(Profesor)
-class ProfesorAdmin(admin.ModelAdmin):
-    list_display = ['Nombres', 'Apellido_paterno', 'Apellido_materno', 'Genero', 'Telefono', 'Correo_electronico', 'Direccion', 'Activo']
-    search_fields = ['Nombres', 'Apellido_paterno', 'Apellido_materno']
-    list_filter = ['Activo']
-    ordering = ['Apellido_paterno', 'Apellido_materno', 'Nombres']
+@admin.register(Cliente)
+class ClienteAdmin(admin.ModelAdmin):
+    list_display = ['first_name', 'last_name', 'genero', 'telefono', 'email', 'direccion', 'activo']
+    search_fields = ['first_name', 'last_name']
+    list_filter = ['activo']
+    ordering = ['last_name', 'first_name']
 
 @admin.register(Empleado)
 class EmpleadoAdmin(admin.ModelAdmin):
-    list_display = ['Nombres', 'Apellido_paterno', 'Apellido_materno', 'Genero', 'Cargo', 'Telefono', 'Correo_electronico', 'Direccion', 'Activo']
-    search_fields = ['Nombres', 'Apellido_paterno', 'Apellido_materno']
-    list_filter = ['Cargo', 'Activo']
-    ordering = ['Apellido_paterno', 'Apellido_materno', 'Nombres']
+    list_display = ['first_name', 'genero', 'cargo', 'telefono', 'email', 'direccion', 'activo']
+    search_fields = ['first_name', 'last_name']
+    list_filter = ['cargo', 'activo']
+    ordering = ['last_name', 'first_name']
 
 @admin.register(Proveedor)
 class ProveedorAdmin(admin.ModelAdmin):
-    list_display = ['Nombre', 'Ciudad', 'Telefono', 'Correo_electronico', 'Contacto']
-    search_fields = ['Nombre']
-    ordering = ['Nombre']
+    list_display = ['nombre', 'ciudad', 'telefono', 'correo_electronico', 'contacto']
+    search_fields = ['nombre']
+    ordering = ['nombre']
 
 @admin.register(Categoria)
 class CategoriaAdmin(admin.ModelAdmin):
-    list_display = ['Nombre_categoria']
-    search_fields = ['Nombre_categoria']
-    ordering = ['Nombre_categoria']
+    list_display = ['nombre']
+    search_fields = ['nombre']
+    ordering = ['nombre']
 
 @admin.register(ComentarioProducto)
 class ComentarioProductoAdmin(admin.ModelAdmin):
-    list_display = ['Producto', 'Comentario', 'Fecha'] 
-    search_fields = ['Producto__Nombre', 'Estudiante__Nombres', 'Profesor__Nombres']
-    ordering = ['-Fecha']
+    list_display = ['producto', 'comentario', 'fecha']
+    search_fields = ['producto__Nombre', 'cliente_first_name']
+    ordering = ['-fecha']
 
 
 @admin.register(DetallePedido)
 class DetallePedidoAdmin(admin.ModelAdmin):
-    list_display = ['Pedido', 'Producto', 'Cantidad', 'precio_total']
-    search_fields = ['Pedido__pk', 'Producto__Nombre']
-    ordering = ['Pedido']
+    list_display = ['pedido', 'producto', 'cantidad', 'precio_total']
+    search_fields = ['pedido__pk', 'producto__Nombre']
+    ordering = ['pedido']
 
 @admin.register(HistorialPedido)
 class HistorialPedidoAdmin(admin.ModelAdmin):
-    list_display = ['Pedido', 'Estado_entrega', 'Fecha_entrega']
-    search_fields = ['Pedido__pk']
-    list_filter = ['Estado_entrega']
-    ordering = ['-Fecha_entrega']
+    list_display = ['pedido', 'estado_entrega', 'fecha_entrega']
+    search_fields = ['pedido__pk']
+    list_filter = ['estado_entrega']
+    ordering = ['-fecha_entrega']
 
 @admin.register(Almuerzo)
 class AlmuerzoAdmin(admin.ModelAdmin):
-    list_display = ['Id_almuerzo', 'Estudiante', 'Fecha', 'Detalle', 'Precio']
-    search_fields = ['Id_almuerzo', 'Estudiante__Nombres']
-    ordering = ['-Fecha']
+    list_display = ['cliente', 'fecha', 'detalle', 'precio']
+    search_fields = ['cliente_first_name']
+    ordering = ['-fecha']
 
 @admin.register(Padre)
 class PadreAdmin(admin.ModelAdmin):
-    list_display = ['Nombre', 'Estudiante', 'Correo_electronico', 'Telefono', 'Recomendaciones']
-    search_fields = ['Nombre', 'Estudiante__Nombres']
-    ordering = ['Estudiante', 'Nombre']
+    list_display = ['first_name', 'email', 'telefono', 'recomendaciones']
+    search_fields = ['first_name']
+    ordering = ['first_name']

@@ -82,10 +82,10 @@
       <section class="container-products">
         {% for producto in productos %}
         <div class="product">
-            <img src="{{ producto.Imagen_Producto.url }}" alt="{{ producto.Nombre }}" class="product__img">
+            <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" class="product__img">
             <div class="product__description">
-                <h3 class="product__title">{{ producto.Nombre }}</h3>
-                <span class="product__price">{{ producto.Precio }}</span>
+                <h3 class="product__title">{{ producto.nombre }}</h3>
+                <span class="product__price">{{ producto.precio }}</span>
                 <input type="number" class="cantidadProducto" min="1" value="1" id="input{{producto.pk}}">
             </div>
             <a href="#" onclick="agregarAlCarrito('{{ producto.pk }}', '{{ csrf_token}}');">

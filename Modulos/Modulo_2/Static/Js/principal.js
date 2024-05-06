@@ -49,8 +49,6 @@ setInterval(function(){
 }, 5000);
 
 const agregarAlCarrito = function(producto_id, csrf_token){
-    console.log(producto_id);
-    console.log(csrf_token);  
     cantidad = 1;
     $.ajax({
         url: `/agregar_alcarrito/`,
@@ -59,7 +57,7 @@ const agregarAlCarrito = function(producto_id, csrf_token){
             csrfmiddlewaretoken: csrf_token,
             // Envia los datos del formulario
             producto_id: producto_id,
-            cantidad: cantidad, 
+            cantidad: cantidad,
         },
         success: function (data) {
             // Muestra SweetAlert con el mensaje
