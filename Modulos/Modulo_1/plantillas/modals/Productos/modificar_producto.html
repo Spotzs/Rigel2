@@ -1,14 +1,14 @@
-<div class="modal fade" id="edicionModal{{ producto.Id_producto }}" tabindex="-1" role="dialog" aria-labelledby="edicionModalLabel{{ producto.Id_producto }}" aria-hidden="true">
+<div class="modal fade" id="edicionModal{{ producto.pk }}" tabindex="-1" role="dialog" aria-labelledby="edicionModalLabel{{ producto.pk }}" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="edicionModalLabel{{ producto.Id_producto }}">Modificar Producto</h5>
+                <h5 class="modal-title" id="edicionModalLabel{{ producto.pk }}">Modificar Producto</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <form method="POST" id="formModificarProducto" action="{% url 'modificar_producto' producto.Id_producto %}">
+                <form method="POST" id="formModificarProducto" action="{% url 'modificar_producto' producto.pk %}">
                     {% csrf_token %}
                     {{ form.as_p }}
                     <button type="submit" class="btn btn-primary">Guardar cambios</button>

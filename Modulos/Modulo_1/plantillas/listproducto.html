@@ -68,36 +68,38 @@
                         <th>Precio</th>
                         <th>Descripción</th>
                         <th>Fecha de Vencimiento</th>
+                        <th>Disponible</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for producto in productos %}
                         <tr>
-                            <td>{{ producto.Id_producto }}</td>
-                            <td>{{ producto.Proveedor }}</td>
+                            <td>{{ producto.pk }}</td>
+                            <td>{{ producto.proveedor }}</td>
                             <td>
-                                {% if producto.Imagen_Producto %}
-                                    <img src="{{ producto.Imagen_Producto.url }}" alt="{{ producto.Nombre }}" style="max-width: 100px; max-height: 100px;">
+                                {% if producto.imagen %}
+                                    <img src="{{ producto.imagen.url }}" alt="{{ producto.Nombre }}" style="max-width: 100px; max-height: 100px;">
                                 {% else %}
                                     No hay imagen disponible
                                 {% endif %}
                             </td>
-                            <td>{{ producto.Nombre }}</td>
-                            <td>{{ producto.Stock }}</td>
-                            <td>{{ producto.Precio }}</td>
-                            <td>{{ producto.Descripcion }}</td>
-                            <td>{{ producto.Fecha_vencimiento }}</td>
-                            
+                            <td>{{ producto.nombre }}</td>
+                            <td>{{ producto.stock }}</td>
+                            <td>{{ producto.precio }}</td>
+                            <td>{{ producto.descripcion }}</td>
+                            <td>{{ producto.fecha_vencimiento }}</td>
+                            <td>{{ producto.disponible }}</td>
+
                             <td>
                                 {% if perms.Modulo_1.change_producto %}
-                                <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#edicionModal{{ producto.Id_producto }}" data-url="{% url 'modificar_producto' producto.Id_producto %}">
+                                <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#edicionModal{{ producto.pk }}" data-url="{% url 'modificar_producto' producto.pk %}">
                                     <i class="fas fa-edit"></i>
                                 </button>
                                 {% endif %}
 
                                 {% if perms.Modulo_1.delete_producto %}
-                                <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal{{ producto.Id_producto }}">
+                                <button type="button" class="btn btn-danger btn-sm" onclick="eliminarProducto('{{ proveedor.pk }}', '{{ csrf_token}}');">
                                     <i class="fas fa-trash"></i>
                                 </button>
                                 {% endif %}

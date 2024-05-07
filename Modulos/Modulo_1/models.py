@@ -34,7 +34,7 @@ class Grado(models.Model):
         return self.Nombre
 
 
-class Cliente(User):
+class Cliente(models.Model):
     colegio = models.ForeignKey(Colegio, on_delete=models.CASCADE)
     genero = models.CharField(max_length=1, choices=[('M', 'Masculino'), ('F', 'Femenino'), ('O', 'Otro')])
     grado = models.ForeignKey(Grado, on_delete=models.SET_NULL, null=True, blank=True)
@@ -45,7 +45,8 @@ class Cliente(User):
     tipo = models.CharField(max_length=10, choices=[('PROFESOR', 'Profesor'), ('ESTUDIANTE', 'cliente')], default='ESTUDIANTE')
 
 
-class Empleado(User):
+class Empleado(models.Model):
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE)
     genero = models.CharField(max_length=1, choices=[('M', 'Masculino'), ('F', 'Femenino'), ('O', 'Otro')])
     cargo = models.CharField(max_length=15, choices=[('E', 'Empleado'), ('A', 'Administrador')])
     telefono = models.CharField(max_length=15)
@@ -64,7 +65,8 @@ class Proveedor(models.Model):
     telefono = models.CharField(max_length=15)
     correo_electronico = models.EmailField(max_length=50)
     contacto = models.CharField(max_length=35)
-
+    activo = models.BooleanField(default=True)
+    
     def __str__(self):
         return self.nombre
 
@@ -160,8 +162,9 @@ class Almuerzo(models.Model):
 
 
 # Tabla para almacenar información sobre los padres de los estudiantes
-class Padre(User):
-    cliente_id = models.IntegerField()
+class Padre(models.Model):
+    cliente = models.OneToOneField(Cliente, on_delete=models.CASCADE)
+    hijos = models.ManyToManyField(Cliente, related_name='padres')
     telefono = models.CharField(max_length=15)
     recomendaciones = models.CharField(max_length=255)
 

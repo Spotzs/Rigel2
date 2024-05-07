@@ -165,32 +165,40 @@ def contactar(request):
         return render(request, "contactoExitoso.html")
     return render(request, "formularioContacto.html")
 
-@permission_required('Modulo_1.view_estudiante', login_url='/login/')
-def listado_estudiante(request):
-    estudiantes = Estudiante.objects.all()
-    return render(request, "listest.html", {'estudiantes': estudiantes})
-
-@permission_required('Modulo_1.view_profesor', login_url='/login/')
-def listado_profesor(request):
-    profesores = Profesor.objects.all()
+@permission_required('Modulo_1.view_cliente', login_url='/login/')
+def listado_cliente(request):
+    clientes = Cliente.objects.all()
     registros_por_pagina = int(request.GET.get('registrosPorPagina', 5))  # Obtener el valor del parámetro GET, con 10 como valor predeterminado
-    paginator = Paginator(profesores, registros_por_pagina)
+    paginator = Paginator(clientes, registros_por_pagina)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
     context = {
-        'profesores': page_obj,
+        'clientes': page_obj,
         'paginator': paginator,
         'page_obj': page_obj,
         'registros_por_pagina': registros_por_pagina,  # Agregar el valor de registros_por_pagina al contexto
     }
 
-    return render(request, 'listprofesor.html', context)
+    return render(request, 'listclientes.html', context)
 
 @permission_required('Modulo_1.view_colegio', login_url='/login/')
 def listado_colegio(request):
     colegios = Colegio.objects.all()
-    return render(request, "modals/Colegio/listcole.html", {'colegios': colegios})
+    registros_por_pagina = int(request.GET.get('registrosPorPagina', 5))  # Obtener el valor del parámetro GET, con 10 como valor predeterminado
+    paginator = Paginator(colegios, registros_por_pagina)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'colegios': page_obj,
+        'paginator': paginator,
+        'page_obj': page_obj,
+        'registros_por_pagina': registros_por_pagina,  # Agregar el valor de registros_por_pagina al contexto
+    }
+
+    return render(request, 'listcole.html', context)
+
 
 @permission_required('Modulo_1.view_grado', login_url='/login/')
 def listado_grado(request):
@@ -205,12 +213,24 @@ def listado_aniolectivo(request):
 @permission_required('Modulo_1.view_proveedor', login_url='/login/')
 def listado_proveedor(request):
     proveedores = Proveedor.objects.all()
-    return render(request, "modals/Proveedor/listproveedor.html", {'proveedores': proveedores})
+    registros_por_pagina = int(request.GET.get('registrosPorPagina', 5))  
+    paginator = Paginator(proveedores, registros_por_pagina)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'proveedores': page_obj,
+        'paginator': paginator,
+        'page_obj': page_obj,
+        'registros_por_pagina': registros_por_pagina,
+    }
+
+    return render(request, 'listproveedor.html', context)
 
 @permission_required('Modulo_1.view_producto', login_url='/login/')
 def listado_producto(request):
     productos = Producto.objects.all()
-    registros_por_pagina = int(request.GET.get('registrosPorPagina', 5))  # Obtener el valor del parámetro GET, con 10 como valor predeterminado
+    registros_por_pagina = int(request.GET.get('registrosPorPagina', 5))  
     paginator = Paginator(productos, registros_por_pagina)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -219,7 +239,7 @@ def listado_producto(request):
         'productos': page_obj,
         'paginator': paginator,
         'page_obj': page_obj,
-        'registros_por_pagina': registros_por_pagina,  # Agregar el valor de registros_por_pagina al contexto
+        'registros_por_pagina': registros_por_pagina,
     }
 
     return render(request, 'listproducto.html', context)
@@ -410,7 +430,7 @@ def agregar_proveedor(request):
     else:
         form = ProveedorForm()
     
-    return render(request, 'agregarprofesor.html', {'form': form})
+    return render(request, 'modals/Proveedor/agregar_proveedor.html', {'form': form})
 
 @login_required
 def modificar_estudiante(request, Id_estudiante):
@@ -547,6 +567,24 @@ def eliminar_empleado(request, Id_empleado):
     # Devuelve la respuesta en formato JSON
     return JsonResponse(swal_data)
 
+@login_required 
+def eliminar_proveedor(request, pk):
+
+    if not request.user.has_perm('Modulo_1.delete_proveedor'):
+        return redirect('/login/?denied=true')
+
+    proveedor = get_object_or_404(Proveedor, id=pk)
+    proveedor_nombre = proveedor.nombre  
+    proveedor.delete()
+
+    swal_data = {
+        'title': 'proveedor eliminado!',
+        'text': f'El proveedor "{proveedor_nombre}" ha sido eliminado correctamente.',
+        'icon': 'success',
+    }
+
+    return JsonResponse(swal_data)
+
 def buscarestudiante(request):
     busqueda = request.GET.get("buscar")
     estudiantes = Estudiante.objects.all()
@@ -630,12 +668,12 @@ def eliminar_producto(request, Id_producto):
     return JsonResponse(swal_data)
 
 @login_required
-def modificar_producto(request, Id_producto):
+def modificar_producto(request, pk):
 
     if not request.user.has_perm('Modulo_1.change_producto'):
         return redirect('/login/?denied=true')
 
-    producto = get_object_or_404(Producto, Id_producto=Id_producto)
+    producto = get_object_or_404(Producto, pk=pk)
     form = ProductoForm(instance=producto)
     current_page = request.META.get('HTTP_REFERER')  # Obtener la URL de la página actual
 
@@ -650,6 +688,26 @@ def modificar_producto(request, Id_producto):
 
     return render(request, 'modals/Productos/modificar_producto.html', {'form': form, 'producto': producto})
 
+@login_required
+def modificar_proveedor(request, pk):
+
+    if not request.user.has_perm('Modulo_1.change_proveedor'):
+        return redirect('/login/?denied=true')
+
+    proveedor = get_object_or_404(Proveedor, pk=pk)
+    form = ProveedorForm(instance=proveedor)
+    current_page = request.META.get('HTTP_REFERER')  # Obtener la URL de la página actual
+
+    if request.method == 'POST':
+        form = ProveedorForm(request.POST, request.FILES, instance=proveedor)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Proveedor modificado correctamente")
+            return redirect(current_page)
+        else:
+            messages.error(request, "Error al modificar el Proveedor")
+
+    return render(request, 'modals/Proveedor/modificar_proveedor.html', {'form': form, 'proveedor': proveedor})
 
 @login_required
 def buscar_producto(request):

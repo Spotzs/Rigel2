@@ -1,0 +1,85 @@
+{% extends "index.html" %}
+{% load static %}
+
+{% block buscador %}
+<form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search"
+method="GET" action="{% url 'buscarestudiante' %}">
+  <div class="input-group">
+    <input type="text" class="form-control bg-light border-0 small" placeholder="Buscar..." name="buscar" value="{{ request.GET.buscar }}">
+    <div class="input-group-append">
+      <button class="btn btn-primary" type="submit">
+        <i class="fas fa-search fa-sm"></i>
+      </button>
+    </div>
+  </div>
+</form>
+{% endblock buscador %}
+
+{% block content %}
+  {% if messages %}
+  <div class="alert-container">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  <div class="container py-4">
+    <h2 class="text-center mb-4">Listado de Estudiantes</h2>
+    <div class="row mb-3">
+      <div class="col-md-6"> <!-- Cambiado el tamaño de la columna a 6 -->
+        <a href="{% url 'agregar_estudiante' %}" class="btn btn-primary">Agregar Estudiante</a>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead class="thead-dark">
+              <tr>
+                <th>Id Est</th>
+                <th>Colegio</th>
+                <th>Apellido</th>
+                <th>Nombres</th>
+                <th>Género</th>
+                <th>Grado</th>
+                <th>Teléfono</th>
+                <th>Correo Electrónico</th>
+                <th>Dirección</th>
+                <th>Activo</th>
+                <th>Alergias</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for estudiante in estudiantes %}
+              <tr>
+                <td>{{ estudiante.Id_estudiante }}</td>
+                <td>{{ estudiante.Colegio }}</td>
+                <td>{{ estudiante.Apellido }}</td>
+                <td>{{ estudiante.Nombres }}</td>
+                <td>{{ estudiante.Genero }}</td>
+                <td>{{ estudiante.Grado }}</td>
+                <td>{{ estudiante.Telefono }}</td>
+                <td>{{ estudiante.Correo_electronico }}</td>
+                <td>{{ estudiante.Direccion }}</td>
+                <td>{{ estudiante.Activo }}</td>
+                <td>{{ estudiante.Alergias }}</td>
+                <td>
+                  <a href="{% url 'modificar_estudiante' estudiante.Id_estudiante %}" class="btn btn-info btn-sm">Modificar</a>
+                  <a href="{% url 'eliminar_estudiante' estudiante.Id_estudiante %}" class="btn btn-danger btn-sm">Eliminar</a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+

@@ -104,21 +104,40 @@ class GradoAdmin(admin.ModelAdmin):
 
 @admin.register(Cliente)
 class ClienteAdmin(admin.ModelAdmin):
-    list_display = ['first_name', 'last_name', 'genero', 'telefono', 'email', 'direccion', 'activo']
-    search_fields = ['first_name', 'last_name']
+    list_display = ['get_first_name', 'get_last_name', 'genero', 'telefono', 'email', 'direccion', 'activo']
+    search_fields = ['usuario__first_name', 'usuario__last_name']
     list_filter = ['activo']
-    ordering = ['last_name', 'first_name']
+    ordering = ['usuario__last_name', 'usuario__first_name']
+
+    def get_first_name(self, obj):
+        return obj.usuario.first_name
+    
+    def get_last_name(self, obj):
+        return obj.usuario.last_name
+    
+    def email(self, obj):
+        return obj.usuario.email
+
 
 @admin.register(Empleado)
 class EmpleadoAdmin(admin.ModelAdmin):
-    list_display = ['first_name', 'genero', 'cargo', 'telefono', 'email', 'direccion', 'activo']
-    search_fields = ['first_name', 'last_name']
+    list_display = ['get_first_name', 'get_last_name', 'genero', 'cargo', 'telefono', 'email', 'direccion', 'activo']
+    search_fields = ['usuario__first_name', 'usuario__last_name']
     list_filter = ['cargo', 'activo']
-    ordering = ['last_name', 'first_name']
+    ordering = ['usuario__last_name', 'usuario__first_name']
+
+    def get_first_name(self, obj):
+        return obj.usuario.first_name
+    
+    def get_last_name(self, obj):
+        return obj.usuario.last_name
+    
+    def email(self, obj):
+        return obj.usuario.email
 
 @admin.register(Proveedor)
 class ProveedorAdmin(admin.ModelAdmin):
-    list_display = ['nombre', 'ciudad', 'telefono', 'correo_electronico', 'contacto']
+    list_display = ['nombre', 'ciudad', 'telefono', 'correo_electronico', 'contacto', 'activo']
     search_fields = ['nombre']
     ordering = ['nombre']
 
@@ -156,6 +175,15 @@ class AlmuerzoAdmin(admin.ModelAdmin):
 
 @admin.register(Padre)
 class PadreAdmin(admin.ModelAdmin):
-    list_display = ['first_name', 'email', 'telefono', 'recomendaciones']
-    search_fields = ['first_name']
-    ordering = ['first_name']
+    list_display = ['get_first_name', 'get_last_name', 'email', 'telefono', 'recomendaciones']
+    search_fields = ['usuario__first_name', 'usuario__last_name']
+    ordering = ['usuario__last_name', 'usuario__first_name']
+
+    def get_first_name(self, obj):
+        return obj.usuario.first_name
+    
+    def get_last_name(self, obj):
+        return obj.usuario.last_name
+    
+    def email(self, obj):
+        return obj.usuario.email
