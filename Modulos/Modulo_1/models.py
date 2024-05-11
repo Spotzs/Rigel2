@@ -35,7 +35,7 @@ class Grado(models.Model):
 
 
 class Cliente(models.Model):
-    usuario = models.OneToOneField(User, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
     colegio = models.ForeignKey(Colegio, on_delete=models.CASCADE)
     genero = models.CharField(max_length=1, choices=[('M', 'Masculino'), ('F', 'Femenino'), ('O', 'Otro')])
     grado = models.ForeignKey(Grado, on_delete=models.SET_NULL, null=True, blank=True)
@@ -132,6 +132,8 @@ class Pedido(models.Model):
     def __str__(self):
         return f"Pedido #{self.pk}"
 
+    def get_total(self):
+        return sum(detalle.precio_total for detalle in self.detallepedido_set.all())
 
 # Tabla para almacenar información detallada sobre los productos incluidos en los pedidos
 class DetallePedido(models.Model):
@@ -152,6 +154,33 @@ class HistorialPedido(models.Model):
     def __str__(self):
         return "Historial pedido {0}".format(self.pk)
 
+class Venta(models.Model):
+    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)
+    fecha = models.DateTimeField(auto_now_add=True)
+    total = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    desglosar_iva = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Venta #{self.pk}"
+
+    def calcular_total(self):
+        detalles = self.detalleventa_set.all()
+        total = sum(detalle.subtotal for detalle in detalles)
+        self.total = total
+        self.save()
+
+class DetalleVenta(models.Model):
+    venta = models.ForeignKey(Venta, on_delete=models.CASCADE)
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    cantidad = models.PositiveIntegerField(default=1)
+    precio_unitario = models.DecimalField(max_digits=10, decimal_places=2)
+
+    @property
+    def subtotal(self):
+        return self.cantidad * self.precio_unitario
+
+    def __str__(self):
+        return f"Detalle de {self.venta.pk} - {self.producto.nombre}"
 
 # Tabla para almacenar información sobre los almuerzos pedidos por los estudiantes
 class Almuerzo(models.Model):

@@ -13,7 +13,8 @@ from Modulos.Modulo_1.views import (
     buscarestudiante, buscar_grado, buscar_colegio, buscar_lectivo, listado_producto, eliminar_producto,
     modificar_producto, listado_proveedor, buscar_producto, exportar_listado, listado_pedido, buscar_pedido, agregar_alcarrito,
     listado_empleado, agregar_empleado, modificar_empleado, eliminar_empleado, agregar_proveedor, modificar_proveedor,
-    eliminar_proveedor, carrito, realizar_pedido, eliminar_aniolectivo, eliminar_grado, eliminar_colegio
+    eliminar_proveedor, carrito, realizar_pedido, eliminar_aniolectivo, eliminar_grado, eliminar_colegio,
+    realizar_venta, obtener_producto, listado_ventas, obtener_cliente
 
 )
 
@@ -78,8 +79,16 @@ urlpatterns = [
     path('eliminar_producto/<pk>', login_required(eliminar_producto), name='eliminar_producto'),
     path('eliminar_empleado/<int:Id_empleado>', login_required(eliminar_empleado), name='eliminar_empleado'),
 
+    #carrito
     path('carrito/', login_required(carrito), name='carrito'),
     path('agregar_alcarrito/', login_required(agregar_alcarrito), name='agregar_alcarrito'),
     path('realizar_pedido/', login_required(realizar_pedido), name='realizar_pedido'),
+
+    #ventas
+    path('listventas/', login_required(listado_ventas), name='listado_ventas'),
+    path('realizar_venta/', login_required(realizar_venta), name='realizar_venta'),
+    path('obtener-producto/', obtener_producto, name='obtener_producto'),
+    path('obtener-cliente/', login_required(obtener_cliente), name='obtener_cliente'),
+
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

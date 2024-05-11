@@ -159,6 +159,22 @@ class ProveedorAdmin(admin.ModelAdmin):
     search_fields = ['nombre']
     ordering = ['nombre']
 
+@admin.register(Venta)
+class VentaAdmin(admin.ModelAdmin):
+    list_display = ['get_first_name', 'fecha', 'total', 'desglosar_iva']
+    search_fields = ['get_first_name']
+    ordering = ['id']
+
+    def get_first_name(self, obj):
+        return obj.cliente.usuario.first_name
+
+@admin.register(DetalleVenta)
+class DetalleVentaAdmin(admin.ModelAdmin):
+    list_display = ['venta', 'producto', 'cantidad', 'precio_unitario']
+    search_fields = ['id']
+    ordering = ['id']
+
+
 @admin.register(Categoria)
 class CategoriaAdmin(admin.ModelAdmin):
     list_display = ['nombre']

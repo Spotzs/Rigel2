@@ -83,7 +83,9 @@ sr.reveal(`.specs__img, .discount__img`,{origin: 'right'})
 sr.reveal(`.case__img`,{origin: 'top'})
 sr.reveal(`.case__data`)
 
-const agregarAlCarrito = function(producto_id, csrf_token){
+const agregarAlCarrito = function(producto_id, csrf_token) {
+    const cantidadInput = $(`#input${producto_id}`);
+    const cantidad = parseInt(cantidadInput.val());
     cantidad = 1;
     $.ajax({
         url: `/agregar_alcarrito/`,
@@ -108,6 +110,25 @@ const agregarAlCarrito = function(producto_id, csrf_token){
         }
     });
 }
+
+const AbrirModalCarrito = function() {
+        
+    // function AbrirModalCarrito() {
+        // console.log('probando')
+        // $.ajax({
+        //     url: "{% url 'carrito' %}",
+        //     success: function(data) {
+        //         $('#carritoModal .modal-body').html(data);
+        //         $('#carritoModal').modal('show');
+        //     }
+        // });
+       $('#carritoModal .modal-body').html('<p>hola</p>');
+    $('#carritoModal').modal('show');
+    }
+    
+    $('.btn-primary').click(function() {
+        AbrirModalCarrito();
+    });
 
 $(document).ready(function() {
     $('#btn-carrito').click(function(e) {

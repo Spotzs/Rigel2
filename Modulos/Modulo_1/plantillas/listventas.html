@@ -22,11 +22,11 @@
 
 {% block content %}
 <div class="container py-4">
-    <h2 class="text-center mb-4">Listado de Clientes</h2>
+    <h2 class="text-center mb-4">Listado de Ventas</h2>
 
     <div class="mb-3">
-        {% if perms.Modulo_1.add_cliente %}
-        <button type="button" class="btn btn-primary btn-sm mr-2" data-toggle="modal" data-target="#agregarClienteModal">
+        {% if perms.Modulo_1.add_producto %}
+        <button type="button" class="btn btn-primary btn-sm mr-2" data-toggle="modal" data-target="#agregarProductoModal">
             <i class="fas fa-plus mr-1"></i> Agregar
         </button>
         {% endif %}
@@ -43,7 +43,7 @@
         </div>
     </div>
 
-    <form method="get" action="{% url 'listado_cliente' %}" id="formRegistrosPorPagina" class="form-inline mb-3">
+    <form method="get" action="{% url 'listado_ventas' %}" id="formRegistrosPorPagina" class="form-inline mb-3">
         <div class="form-group mr-2">
             <label for="registrosPorPagina" class="mr-2">Registros por página:</label>
             <div class="input-group input-group-sm">
@@ -55,102 +55,62 @@
         </div>
     </form>
     
-                  <button type="button" class="btn btn-primary btn-sm mr-2" data-toggle="modal" data-target="#carritoModal">
-                <i class="fas fa-plus mr-1"></i> Agregar
-            </button>
-    {% if clientes %}
+    {% if ventas %}
         <div class="table-responsive">
             <table class="table table-striped table-hover">
                 <thead class="thead-dark">
                     <tr>
-                      <th>Codigo</th>
-                      <th>Tipo</th>
-                      <th>Colegio</th>
-                      <th>Apellido</th>
-                      <th>Nombres</th>
-                      <th>Género</th>
-                      <th>Grado</th>
-                      <th>Teléfono</th>
-                      <th>Correo Electrónico</th>
-                      <th>Dirección</th>
-                      <th>Alergias</th>
-                      <th>Activo</th>
-                      <th>Acciones</th>
+                        <th>Código</th>
+                        <td>Cliente</td>
+                        <th>fecha</th>
+                        <th>total</th>
+                        <th>desglosar iva</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for cliente in clientes %}
+                    {% for venta in ventas %}
                         <tr>
-                          <td>{{ cliente.pk }}</td>
-                          <td>{{ cliente.tipo }}</td>
-                          <td>{{ cliente.colegio }}</td>
-                          <td>{{ cliente.usuario.last_name }}</td>
-                          <td>{{ cliente.usuario.first_name }}</td>
-                          <td>{{ cliente.genero }}</td>
-                          <td>{{ cliente.grado }}</td>
-                          <td>{{ cliente.telefono }}</td>
-                          <td>{{ cliente.usuario.email }}</td>
-                          <td>{{ cliente.direccion }}</td>
-                          <td>{{ cliente.alergias }}</td>
-                          <td>{{ cliente.activo }}</td>
+                            <td>{{ venta.pk }}</td>
+                            <td>{{ venta.cliente }}</td>
+                            <td>{{ venta.fecha }}</td>
+                            <td>{{ venta.total }}</td>
+                            <td>{{ venta.desglosar_iva }}</td>
+
                             <td>
-                                {% if perms.Modulo_1.change_producto %}
-                                <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#edicionModal{{ cliente.pk }}" data-url="{% url 'modificar_cliente' cliente.pk %}">
+                                {% if perms.Modulo_1.change_venta %}
+                                <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#edicionModal{{ venta.pk }}" data-url="#">
                                     <i class="fas fa-edit"></i>
                                 </button>
                                 {% endif %}
 
-                                {% if perms.Modulo_1.delete_producto %}
-                                <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal{{ cliente.pk }}">
+                                {% if perms.Modulo_1.delete_venta %}
+                                <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal{{ venta.pk }}">
                                     <i class="fas fa-trash"></i>
                                 </button>
                                 {% endif %}
                             </td>
-                            
                         </tr>
                     {% endfor %}
                 </tbody>
-                
             </table>
         </div>
-        {% include 'paginator.html' with queryset=clientes %}
+        {% include 'paginator.html' with queryset=productos %}
     {% else %}
         <div class="text-center mt-5">
-            <p class="display-4 text-danger">No hay clientes disponibles.</p>
+            <p class="display-4 text-danger">No hay productos disponibles.</p>
         </div>
     {% endif %}
 </div>
 
-<!-- Add the modal-header and modal-footer to the modal -->
-<div class="modal fade" id="carritoModal" role="dialog" tabindex="-1" aria-labelledby="carritoModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="carritoModalLabel">Carrito de Compras</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <!-- The content of the modal will be loaded here -->
-      </div>
-      <div class="modal-footer">
-        <form method="post" action="{% url 'realizar_pedido' %}">
-          {% csrf_token %}
-          <button type="submit" class="btn btn-primary">Realizar Pedido</button>
-      </form>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-      </div>
-    </div>
-  </div>
-</div>
+
 
 
 <!-- Modal para agregar producto -->
-<div class="modal fade" id="agregarClienteModal" role="dialog"> 
+<div class="modal fade" id="agregarProductoModal" role="dialog"> 
     
 <!-- Modal para modificar producto -->
-<div id="editarClienteModal" role="dialog"></div>
+<div id="editarProductoModal" role="dialog"></div>
 
 
 
@@ -166,19 +126,19 @@
         });
     }
 
-    function AbrirModalEdicion(url, clienteId) {
-        $('#editarClienteModal').load(url, function() {
-            $('#edicionModal' + clienteId).modal('show');
+    function AbrirModalEdicion(url, productId) {
+        $('#editarProductoModal').load(url, function() {
+            $('#edicionModal' + productId).modal('show');
         });
     }
 
     function AbrirModalAgregar() {
-        $('#agregarClienteModal').load("{% url 'agregar_cliente' %}", function() {
-            $('#agregarClienteModal').modal('show');
+        $('#agregarProductoModal').load("{% url 'agregar_producto' %}", function() {
+            $('#agregarProductoModal').modal('show');
         });
     }
 
-    function guardarCambios(clienteId) {
+    function guardarCambios(productId) {
         $('#edicionModal').modal('hide');
         $('#productTable').load(document.URL +  ' #productTable'); // Reload the table
     }
@@ -187,8 +147,8 @@
         // Evento para abrir el modal de modificación al hacer clic en el botón "Modificar"
         $('.btn-info').click(function() {
             var url = $(this).data('url');
-            var clienteId = $(this).closest('tr').find('td:first').text(); // Obtener el Id_producto de la fila actual
-            AbrirModalEdicion(url, clienteId);
+            var productId = $(this).closest('tr').find('td:first').text(); // Obtener el Id_producto de la fila actual
+            AbrirModalEdicion(url, productId);
         });
 
         // Evento para abrir el modal de agregar producto al hacer clic en el botón "Agregar Producto"
@@ -221,10 +181,10 @@
     });
     
 
-    function eliminarCliente(pk) {
+    function eliminarProducto(pk) {
         // Realiza una solicitud AJAX para eliminar el producto
         $.ajax({
-            url: `/eliminar_cliente/${pk}`,
+            url: `/eliminar_producto/${pk}`,
             type: 'POST',
             data: {
                 csrfmiddlewaretoken: '{{ csrf_token }}'
@@ -248,8 +208,8 @@
         // Evento para abrir el modal de modificación al hacer clic en el botón "Modificar"
         $('.btn-info').click(function() {
             var url = $(this).data('url');
-            var clienteId = $(this).closest('tr').find('td:first').text(); // Obtener el Id_producto de la fila actual
-            AbrirModalEdicion(url, clienteId);
+            var productId = $(this).closest('tr').find('td:first').text(); // Obtener el Id_producto de la fila actual
+            AbrirModalEdicion(url, productId);
         });
 
 
@@ -258,6 +218,7 @@
         // Evento para confirmar la eliminación del producto al hacer clic en el botón "Eliminar"
         $('.btn-danger').click(function() {
             var pk = $(this).closest('tr').find('td:first').text(); // Obtener el Id_producto de la fila actual
+            console.log(pk)
             Swal.fire({
                 title: '¿Estás seguro?',
                 text: 'Esta acción no se puede deshacer.',
@@ -268,7 +229,7 @@
                 confirmButtonText: 'Sí, eliminar'
             }).then((result) => {
                 if (result.isConfirmed) {
-                  eliminarCliente(pk); // Llama a la función para eliminar el producto
+                    eliminarProducto(pk); // Llama a la función para eliminar el producto
                 }
             });
         });
@@ -279,7 +240,7 @@
                 e.preventDefault();
                 var registrosPorPagina = $('#registrosPorPagina').val();
                 var pageNumber = '{% if page_obj.number %}{{ page_obj.number }}{% else %}1{% endif %}';
-                var url = '{% url 'listado_cliente' %}?registrosPorPagina=' + registrosPorPagina + '&page=' + pageNumber;
+                var url = '{% url 'listado_producto' %}?registrosPorPagina=' + registrosPorPagina + '&page=' + pageNumber;
                 window.location.href = url;
             });
 
@@ -301,18 +262,5 @@
         });
     }
 
-    function AbrirModalCarrito() {
-    $.ajax({
-        url: "{% url 'carrito' %}",
-        success: function(data) {
-            $('#carritoModal .modal-body').html(data);
-            $('#carritoModal').modal('show');
-        }
-    });
-}
-
-    $('.btn-primary').click(function() {
-            AbrirModalCarrito();
-        });
 </script>
 {% endblock extrajs %}

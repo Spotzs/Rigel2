@@ -20,7 +20,7 @@ from .forms import (
     PedidoForm,
     EmpleadoForm
 )
-from .models import Cliente, Producto, Colegio, Grado, Aniolectivo, Proveedor, Pedido, DetallePedido, Empleado
+from .models import Cliente, Producto, Colegio, Grado, Aniolectivo, Proveedor, Pedido, DetallePedido, Empleado, Venta, DetalleVenta
 from django.views.generic import ListView, View
 
 import csv
@@ -995,3 +995,92 @@ def realizar_pedido(request):
 
     return redirect('carrito')
     
+
+
+
+
+
+#apartado de ventas
+
+
+def listado_ventas(request):
+    ventas = Venta.objects.all()
+    registros_por_pagina = int(request.GET.get('registrosPorPagina', 5))  # Obtener el valor del parámetro GET, con 10 como valor predeterminado
+    paginator = Paginator(ventas, registros_por_pagina)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'ventas': page_obj,
+        'paginator': paginator,
+        'page_obj': page_obj,
+        'registros_por_pagina': registros_por_pagina,  # Agregar el valor de registros_por_pagina al contexto
+    }
+
+    return render(request, 'listventas.html', context)
+
+
+
+def realizar_venta(request):
+    if request.method == 'POST':
+        fecha_venta = request.POST.get('fecha_venta')
+        desglosar_iva = request.POST.get('desglosar_iva') == 'on'
+        cliente_id = request.POST.get('cliente_id')  # Obtener el ID del cliente
+        productos = request.POST.getlist('productos[]')
+        cantidades = request.POST.getlist('cantidades[]')
+        print(f"Cliente ID: {cliente_id}")
+
+        # Obtener el cliente
+        if cliente_id:
+            cliente = get_object_or_404(Cliente, pk=cliente_id)
+        else:
+            return render(request, 'ventas.html', {'error': 'No se seleccionó un cliente.'})
+
+        # Crear una nueva venta asociada al cliente
+        venta = Venta.objects.create(cliente=cliente, fecha=fecha_venta, desglosar_iva=desglosar_iva)
+
+        # Crear los detalles de la venta
+        for producto_id, cantidad in zip(productos, cantidades):
+            producto = get_object_or_404(Producto, pk=producto_id)
+            detalle_venta = DetalleVenta.objects.create(
+                venta=venta,
+                producto=producto,
+                cantidad=cantidad,
+                precio_unitario=producto.precio
+            )
+
+            venta.calcular_total()
+
+        # Realizar otras operaciones necesarias después de crear la venta
+        productos = Producto.objects.all()
+        clientes = Cliente.objects.all()
+
+        mensaje_exito = "La venta se ha realizado correctamente."
+        return render(request, 'ventas.html', {'productos': productos, 'clientes': clientes, 'mensaje_exito': mensaje_exito})
+
+    productos = Producto.objects.all()
+    clientes = Cliente.objects.all()
+    return render(request, 'ventas.html', {'productos': productos, 'clientes': clientes})
+
+def obtener_producto(request):
+    producto_id = request.GET.get('producto_id')
+    producto = get_object_or_404(Producto, pk=producto_id)
+    data = {
+        'producto': {
+            'nombre': producto.nombre,
+            'precio': producto.precio,
+        }
+    }
+    return JsonResponse(data)
+
+def obtener_cliente(request):
+    cliente_id = request.GET.get('cliente_id')
+    cliente = get_object_or_404(Cliente, pk=cliente_id)
+    data = {
+        'cliente': {
+            'nombre': cliente.usuario.first_name,
+            'email': cliente.usuario.email,
+            'colegio': str(cliente.colegio),
+        }
+    }
+    return JsonResponse(data)
