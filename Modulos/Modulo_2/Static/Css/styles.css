@@ -322,3 +322,76 @@ body::before {
     background-size: cover;
     animation: background-animation 10s ease infinite alternate;
 }
+
+
+
+/* Estilos CSS para los pasos */
+/* styles.css */
+.step-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.step {
+    display: none;
+    margin-bottom: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 400px;
+}
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px; /* Ajusta el margen según sea necesario */
+}
+
+.button-container button {
+    margin: 5px;
+}
+
+.progress-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.progress-bar {
+    display: flex;
+    justify-content: space-between;
+    width: 300px;
+}
+
+.progress-step {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #ccc;
+    transition: background-color 0.3s ease;
+}
+
+.progress-step.active {
+    background-color: #4CAF50;
+}
+
+.form-select {
+    padding: 8px;
+    width: 100%;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    outline: none;
+}
+
+/* Estilo específico para el select de género */
+#id_tipo {
+    width: auto; /* Ancho automático para adaptarse al contenido */
+}
+#id_colegio {
+    width: auto; /* Ancho automático para adaptarse al contenido */
+}
+#id_genero {
+    width: auto; /* Ancho automático para adaptarse al contenido */
+}

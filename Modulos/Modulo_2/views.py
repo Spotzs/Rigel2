@@ -8,7 +8,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse_lazy
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from .forms import SignUpForm
-from Modulos.Modulo_1.models import Producto
+from Modulos.Modulo_1.models import Producto, Cliente
 
 
 def landing(request):
@@ -26,36 +26,45 @@ def landing(request):
     }
     return render(request, "landing.html", context)
 
-
 def register(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            user.refresh_from_db()  # Actualiza el objeto usuario desde la base de datos
+            user = form.save(commit=False)
             user.first_name = form.cleaned_data.get('first_name')
             user.last_name = form.cleaned_data.get('last_name')
             user.save()
+            colegio = form.cleaned_data.get('colegio')
+            tipo = form.cleaned_data.get('tipo')
+            telefono = form.cleaned_data.get('telefono')  # Obtener el valor del campo "telefono"
+            direccion = form.cleaned_data.get('direccion')  # Obtener el valor del campo "direccion"
+            genero = form.cleaned_data.get('genero')  # Obtener el valor del campo "genero"
+            cliente = Cliente(usuario=user, colegio=colegio, tipo=tipo, telefono=telefono, direccion=direccion, genero=genero)  # Guardar los valores de los campos adicionales
+            cliente.save()
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=user.username, password=raw_password)
             if user is not None:
                 login(request, user)
-                return redirect('index')  # Redirige al usuario después del registro exitoso
+                return redirect('index')
     else:
         form = SignUpForm()
     return render(request, 'login.html', {'registro_form': form})
 
+
+from django.contrib.auth.forms import AuthenticationForm
+
 def user_login(request):
     if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
+        login_form = AuthenticationForm(request, data=request.POST)
+        if login_form.is_valid():
+            username = login_form.cleaned_data.get('username')
+            password = login_form.cleaned_data.get('password')
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
                 return redirect('index')  # Redirige al usuario después del inicio de sesión exitoso
     else:
-        form = AuthenticationForm()
-    return render(request, 'login.html', {'login_form': form})
-
+        login_form = AuthenticationForm()
+    # Instancia del formulario de registro
+    registro_form = SignUpForm()
+    return render(request, 'login.html', {'login_form': login_form, 'registro_form': registro_form})

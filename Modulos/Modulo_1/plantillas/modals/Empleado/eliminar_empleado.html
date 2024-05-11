@@ -1,5 +1,5 @@
 <!-- eliminar_producto_modal.html -->
-<div class="modal fade" id="deleteModal{{ empleado.Id_empleado }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+<div class="modal fade" id="deleteModal{{ empleado.pk }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -9,11 +9,11 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p>¿Estás seguro de que deseas eliminar el empleado "{{ empleado.Nombres }}"?</p>
+                <p>¿Estás seguro de que deseas eliminar el empleado "{{ empleado.usuario.first_name }}"?</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                <form action="{% url 'eliminar_empleado' empleado.Id_empleado %}" method="post">
+                <form action="{% url 'eliminar_empleado' empleado.pk %}" method="post">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-danger">Eliminar</button>
                 </form>

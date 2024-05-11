@@ -25,7 +25,7 @@
     <h2 class="text-center mb-4">Listado de Empleados</h2>
 
     <div class="mb-3">
-        {% if perms.Modulo_1.add_producto %}
+        {% if perms.Modulo_1.add_empleado %}
         <button type="button" class="btn btn-primary btn-sm mr-2" data-toggle="modal" data-target="#agregarEmpleadoModal">
             <i class="fas fa-plus mr-1"></i> Agregar
         </button>
@@ -62,8 +62,7 @@
                     <tr>
                         <th>Código</th>
                         <th>Apellido</th>
-                        <th>Apellido 2</th>
-                        <th>Nombres</th>
+                        <th>Nombre</th>
                         <th>Genero</th>
                         <th>Cargo</th>
                         <th>Telefono</th>
@@ -77,25 +76,24 @@
                     {% for empleado in empleados %}
                         <tr>
                             <td>{{ empleado.pk }}</td>
-                            <td>{{ empleado.Apellido_paterno }}</td>
-                            <td>{{ empleado.Apellido_materno }}</td>
-                            <td>{{ empleado.Nombres }}</td>
-                            <td>{{ empleado.Genero }}</td>
-                            <td>{{ empleado.Cargo }}</td>
-                            <td>{{ empleado.Telefono }}</td>
-                            <td>{{ empleado.Correo_electronico }}</td>
-                            <td>{{ empleado.Direccion }}</td>
-                            <td>{{ empleado.Activo }}</td>
+                            <td>{{ empleado.usuario.last_name }}</td>
+                            <td>{{ empleado.usuario.first_name }}</td>
+                            <td>{{ empleado.genero }}</td>
+                            <td>{{ empleado.cargo }}</td>
+                            <td>{{ empleado.telefono }}</td>
+                            <td>{{ empleado.usuario.email }}</td>
+                            <td>{{ empleado.direccion }}</td>
+                            <td>{{ empleado.activo }}</td>
 
                             <td>
                                 {% if perms.Modulo_1.change_empleado %}
-                                <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#edicionModal{{ empleado.Id_empleado }}" data-url="{% url 'modificar_empleado' empleado.Id_empleado %}">
+                                <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#edicionModal{{ empleado.pk }}" data-url="{% url 'modificar_empleado' empleado.pk %}">
                                     <i class="fas fa-edit"></i>
                                 </button>
                                 {% endif %}
 
                                 {% if perms.Modulo_1.delete_empleado %}
-                                <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal{{ producto.Id_producto }}">
+                                <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal{{ empleado.pk }}">
                                     <i class="fas fa-trash"></i>
                                 </button>
                                 {% endif %}
@@ -108,7 +106,7 @@
         {% include 'paginator.html' with queryset=empleados %}
     {% else %}
         <div class="text-center mt-5">
-            <p class="display-4 text-danger">No hay productos disponibles.</p>
+            <p class="display-4 text-danger">No hay empleados disponibles.</p>
         </div>
     {% endif %}
 </div>
@@ -191,10 +189,10 @@
     });
     
 
-    function eliminarProducto(Id_empleado) {
+    function eliminarEmpleado(pk) {
         // Realiza una solicitud AJAX para eliminar el producto
         $.ajax({
-            url: `/eliminar_empleado/${Id_empleado}`,
+            url: `/eliminar_empleado/${pk}`,
             type: 'POST',
             data: {
                 csrfmiddlewaretoken: '{{ csrf_token }}'
@@ -227,7 +225,7 @@
 
         // Evento para confirmar la eliminación del producto al hacer clic en el botón "Eliminar"
         $('.btn-danger').click(function() {
-            var Id_empleado = $(this).closest('tr').find('td:first').text(); // Obtener el Id_producto de la fila actual
+            var pk = $(this).closest('tr').find('td:first').text(); // Obtener el Id_producto de la fila actual
             Swal.fire({
                 title: '¿Estás seguro?',
                 text: 'Esta acción no se puede deshacer.',
@@ -238,7 +236,7 @@
                 confirmButtonText: 'Sí, eliminar'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    eliminarProducto(Id_empleado); // Llama a la función para eliminar el producto
+                    eliminarEmpleado(pk); // Llama a la función para eliminar el producto
                 }
             });
         });

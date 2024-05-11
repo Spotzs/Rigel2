@@ -1,170 +1,347 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'Css/principal.css' %}">
-    <title>Modern Login Page | AsmrProg</title>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-</head>
-<body>
-  <header class="main-header">
-    <div class="container container--flex">
-      <div class="main-header__container">
-        <h1 class="main-header__title">GOGGLES</h1>
-        <span class="icon-menu" id="btn-menu"><i class="fas fa-bars"></i></span>
-        <nav class="main-nav" id="main-nav">
-          <ul class="menu">
-            <li class="menu__item"><a href="" class="menu__link">HOME</a></li>
-            <li class="menu__item"><a href="" class="menu__link">ABOUT</a></li>
-            <li class="menu__item"><a href="" class="menu__link">FEATURES</a></li>
-            <li class="menu__item"><a href="" class="menu__link">SHOP</a></li>
-            <li class="menu__item"><a href="" class="menu__link">CONTACT</a></li>
-          </ul>
-        </nav>
-      </div>
-      <div class="main-header__container">
-        <span class="main-header__txt">Need Help</span>
-        <p class="main-header__txt"><i class="fas fa-phone"></i> Call 12345678099</p>
-      </div>
-      <div class="main-header__container">
-        <a href="" class="main-header__link"><i class="fas fa-user"></i></a>
-        <a href="" class="main-header__btn">My cart <i class="fas fa-shopping-cart"></i></a>
-        <input type="search" class="main-header__input" placeholder="Buscar productos"><i class="fas fa-search"></i>
-      </div>
-    </div>
-  </header>
-  <div class="container-slider">
-    
-    <div class="slider" id="slider">
-      <div class="slider__section">
-        <img src="https://images.pexels.com/photos/2097085/pexels-photo-2097085.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260" alt="" class="slider__img">
-        <div class="slider__content">
-          <h2 class="slider__title">Women’s eyewear</h2>
-          <p class="slider__txt">Cool summer sale 50% off</p>
-          <a href="" class="btn-shop">SHOP NOW</a>
-        </div>
-      </div>
-      <div class="slider__section">
-        <img src="https://images.pexels.com/photos/3414327/pexels-photo-3414327.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260" alt="" class="slider__img">
-        <div class="slider__content">
-          <h2 class="slider__title">Women’s eyewear</h2>
-          <p class="slider__txt">Cool summer sale 50% off</p>
-          <a href="" class="btn-shop">SHOP NOW</a>
-        </div>
-      </div>
-      <div class="slider__section">
-        <img src="https://images.pexels.com/photos/2846815/pexels-photo-2846815.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260" alt="" class="slider__img">
-        <div class="slider__content">
-          <h2 class="slider__title">Women’s eyewear</h2>
-          <p class="slider__txt">Cool summer sale 50% off</p>
-          <a href="" class="btn-shop">SHOP NOW</a>
-        </div>
-      </div>
-      <div class="slider__section">
-        <img src="https://snappygoat.com/b/e031d75f5c05484c31a2e3eb0dcc218b4268620a" alt="" class="slider__img">
-        <div class="slider__content">
-          <h2 class="slider__title">Men’s eyewear</h2>
-          <p class="slider__txt">Cool summer sale 50% off</p>
-          <a href="" class="btn-shop">SHOP NOW</a>
-        </div>
-      </div>
-    </div>
-    <div class="slider__btn slider__btn--right" id="btn-right">&#62;</div>
-    <div class="slider__btn slider__btn--left" id="btn-left">&#60;</div>
-  </div>
-  <main class="main">
-    <div class="container">
-      <h2 class="main-title">New Arrivals for you</h2>
-      <section class="container-products">
-        {% for producto in productos %}
-        <div class="product">
-            <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" class="product__img">
-            <div class="product__description">
-                <h3 class="product__title">{{ producto.nombre }}</h3>
-                <span class="product__price">{{ producto.precio }}</span>
-                <input type="number" class="cantidadProducto" min="1" value="1" id="input{{producto.pk}}">
+        <!--=============== FAVICON ===============-->
+        <link rel="shortcut icon" href="https://github.com/bedimcode/responsive-landing-page-headphones/blob/main/assets/img/favicon.png" type="image/x-icon">
+
+        <!--=============== REMIX ICONS ===============-->
+        <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+
+        <!--=============== CSS ===============-->
+        <link rel="stylesheet" href="{% static 'Css/indd.css' %}">
+
+        <title>Responsive headphones landing page</title>
+    </head>
+    <body>
+        <!--=============== HEADER ===============-->
+        <header class="header" id="header">
+            <nav class="nav container">
+                <a href="#" class="nav__logo">
+                    <img src="https://github.com/bedimcode/responsive-landing-page-headphones/blob/main/assets/img/logo.png" alt="">
+                </a>
+
+                <div class="nav__menu" id="nav-menu">
+                    <ul class="nav__list">
+                        <li class="nav__item">
+                            <a href="#home" class="nav__link active-link">Home</a>
+                        </li>
+                        <li class="nav__item">
+                            <a href="#specs" class="nav__link">Specs</a>
+                        </li>
+                        <li class="nav__item">
+                            <a href="#case" class="nav__link">Case</a>
+                        </li>
+                        <li class="nav__item">
+                            <a href="#products" class="nav__link">Productos</a>
+                        </li>
+                        <li class="nav__item">
+                            <a href="{% url 'login' %}" class="nav__link">Login</a>
+                        </li>
+                        <li class="nav__item">
+                            <a href="#" class="button button--flex products__button" onclick="AbrirModalCarrito">Cart</a>
+                        </li>   
+                        </li>
+                    </ul>
+                </div>
+                
+
+                    <div class="nav__close" id="nav-close">
+                        <i class="ri-close-line"></i>
+                    </div>
+                </div>
+
+                <div class="nav__toggle" id="nav-toggle">
+                    <i class="ri-function-line"></i>
+                </div>
+            </nav>
+        </header>
+
+        <main class="main">
+            <!--=============== HOME ===============-->
+            <section class="home section" id="home">
+                <div class="home__container container grid">
+                    <div>
+                        <img src="https://github.com/bedimcode/responsive-landing-page-headphones/blob/main/assets/img/home.png?raw=true" alt="" class="home__img">
+                    </div>
+
+                    <div class="home__data">
+                        <div class="home__header">
+                            <h1 class="home__title">On ear</h1>
+                            <h2 class="home__subtitle">Beats 3</h2>
+                        </div>
+
+                        <div class="home__footer">
+                            <h3 class="home__title-description">Overview</h3>
+                            <p class="home__description">Enjoy award-winning Beats sound with wireless listening freedom and a sleek,
+                                streamlined design with comfortable padded earphones, delivering first-rate playback.
+                            </p>
+                            <a href="#" class="button button--flex">
+                                <span class="button--flex">
+                                    <i class="ri-shopping-bag-line button__icon"></i></i> Add to Bag
+                                </span>
+                                <span class="home__price">$299</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!--=============== SPONSOR ===============-->
+            <section class="sponsor section">
+                <div class="sponsor__container container grid">
+                    <img src="https://github.com/bedimcode/responsive-landing-page-headphones/blob/main/assets/img/sponsor1.png?raw=true" alt="" class="sponsor__img">
+                    <img src="https://github.com/bedimcode/responsive-landing-page-headphones/blob/main/assets/img/sponsor2.png?raw=true" alt="" class="sponsor__img">
+                    <img src="https://github.com/bedimcode/responsive-landing-page-headphones/blob/main/assets/img/sponsor3.png?raw=true" alt="" class="sponsor__img">
+                    <img src="https://github.com/bedimcode/responsive-landing-page-headphones/blob/main/assets/img/sponsor4.png?raw=true" alt="" class="sponsor__img">
+                </div>
+            </section>
+
+            <!--=============== SPECS ===============-->
+            <section class="specs section grid" id="specs">
+                <h2 class="section__title section__title-gradient">Specs</h2>
+
+                <div class="specs__container container grid">
+                    <div class="specs__content grid">
+                        <div class="specs__data">
+                            <i class="ri-bluetooth-line specs__icon"></i>
+                            <h3 class="specs__title">Connection</h3>
+                            <span class="specs__subtitle">Bluetooth v5.2</span>
+                        </div>
+
+                        <div class="specs__data">
+                            <i class="ri-battery-charge-line specs__icon"></i>
+                            <h3 class="specs__title">Battery</h3>
+                            <span class="specs__subtitle">Duration 40h</span>
+                        </div>
+
+                        <div class="specs__data">
+                            <i class="ri-plug-line specs__icon"></i>
+                            <h3 class="specs__title">Load</h3>
+                            <span class="specs__subtitle">Fast charge 4.2-AAC</span>
+                        </div>
+
+                        <div class="specs__data">
+                            <i class="ri-mic-line specs__icon"></i>
+                            <h3 class="specs__title">Microphone</h3>
+                            <span class="specs__subtitle">Supports Apple Siri <br> and Google</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <img src="https://github.com/bedimcode/responsive-landing-page-headphones/blob/main/assets/img/specs.png?raw=true" alt="" class="specs__img">
+                    </div>
+                </div>
+            </section>
+
+
+            <!--=============== CASE ===============-->
+            <section class="case section grid" id="case">
+                <h2 class="section__title section__title-gradient">Case</h2>
+
+                <div class="case__container container grid">
+                    <div>
+                        <img src="https://github.com/bedimcode/responsive-landing-page-headphones/blob/main/assets/img/case.png?raw=true" alt="" class="case__img">
+                    </div>
+
+                    <div class="case__data">
+                        <p class="case__description">With a comfortable and adaptable case so that you can
+                            store it whenever you want, and keep your durability forever.
+                        </p>
+                        <a href="#" class="button button--flex">
+                            <i class="ri-information-line button__icon"></i> More info
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!--=============== DISCOUNT ===============-->
+            <section class="discount section">
+                <div class="discount__container container grid">
+                    <div class="discount__animate">
+                        <h2 class="discount__title">Immerse yourself in <br> your music</h2>
+                        <p class="discount__description">Get it now, up to 50% off.</p>
+                        <a href="#" class="button button--flex">
+                            <i class="ri-shopping-bag-line button__icon"></i> Shop Now
+                        </a>
+                    </div>
+
+                    <img src="https://github.com/bedimcode/responsive-landing-page-headphones/blob/main/assets/img/discount.png?raw=true" alt="" class="discount__img">
+                </div>
+            </section>
+
+            <!--=============== PRODUCTS ===============-->
+            <section class="products section" id="products">
+                <h2 class="section__title section__title-gradient products__line">
+                    Choose <br> Your Style
+                </h2>
+            
+                <div class="products__container container grid">
+                    {% for producto in productos %}
+                    <article class="products__card">
+                        <div class="products__content">
+                            <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}" class="products__img">
+                            <h3 class="products__title">{{ producto.nombre }}</h3>
+                            <span class="products__price">{{ producto.precio }}</span>
+                            <input type="number" class="footer__input" min="1" value="1" id="input{{producto.pk}}"><hr>
+                            <button class="button button--flex products__button" onclick="agregarAlCarrito('{{ producto.pk }}', '{{ csrf_token }}');">
+                                <i class="ri-shopping-bag-line button__icon"></i>
+                            </button>
+                        </div>
+                    </article>
+                    {% endfor %}
+                </div>
+            </section>
+      </main>
+
+        <!--=============== FOOTER ===============-->
+        <footer class="footer section">
+            <div class="footer__container container grid">
+                <a href="#" class="footer__logo">
+                    <img src="https://github.com/bedimcode/responsive-landing-page-headphones/blob/main/assets/img/logo.png?raw=true" alt="">
+                </a>
+
+                <div class="footer__content">
+                    <h3 class="footer__title">Products</h3>
+
+                    <ul class="footer__links">
+                        <li>
+                            <a href="#" class="footer__link">Headphones</a>
+                        </li>
+                        <li>
+                            <a href="#" class="footer__link">Earphones</a>
+                        </li>
+                        <li>
+                            <a href="#" class="footer__link">Earbuds</a>
+                        </li>
+                        <li>
+                            <a href="#" class="footer__link">Accesories</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="footer__content">
+                    <h3 class="footer__title">Support</h3>
+
+                    <ul class="footer__links">
+                        <li>
+                            <a href="#" class="footer__link">Product help</a>
+                        </li>
+                        <li>
+                            <a href="#" class="footer__link">Register</a>
+                        </li>
+                        <li>
+                            <a href="#" class="footer__link">Updates</a>
+                        </li>
+                        <li>
+                            <a href="#" class="footer__link">Provides</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="footer__content">
+                    <form action="" class="footer__form">
+                        <input type="email" placeholder="Email" class="footer__input">
+                        <button class="button button--flex">
+                            <i class="ri-send-plane-line button__icon"></i> Subscribe
+                        </button>
+                    </form>
+
+                    <div class="footer__social">
+                        <a href="https://www.facebook.com/" target="_blank" class="footer__social-link">
+                            <i class="ri-facebook-fill"></i>
+                        </a>
+                        <a href="https://www.instagram.com/" target="_blank" class="footer__social-link">
+                            <i class="ri-instagram-line"></i>
+                        </a>
+                        <a href="https://twitter.com/" target="_blank" class="footer__social-link">
+                            <i class="ri-twitter-line"></i>
+                        </a>
+                    </div>
+                </div>
             </div>
-            <a href="#" onclick="agregarAlCarrito('{{ producto.pk }}', '{{ csrf_token}}');">
-                <i class="product__icon fas fa-cart-plus"></i>
-            </a>
-        </div>
-        {% endfor %}
+
+
+            <p class="footer__copy">
+                <a href="https://www.youtube.com/c/Bedimcode/" target="_blank" class="footer__copy-link">© Bedimcode. All right reserved</a>
+            </p>
+        </footer>
+
+        <!--=============== SCROLL UP ===============-->
+        <a href="#" class="scrollup" id="scroll-up">
+            <i class="ri-arrow-up-s-line scrollup__icon"></i>
+        </a>
+
+        <!--=============== SCROLL REVEAL ===============-->
+        <script src="https://unpkg.com/scrollreveal"></script>
+
+        <!--=============== MAIN JS ===============-->
+        <script src="{% static 'Js/home.js' %}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         
-      </section>
-      <section class="container__testimonials">
-        <h2 class="section__title">Testimonials</h2>
-        <h3 class="testimonial__title">Anamaria </h3>
-        <p class="testimonial__txt">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad, perferendis, animi! Numquam quasi similique, fuga sint. Nulla veritatis quia nemo, magni, necessitatibus impedit inventore, provident culpa repellat esse a quo.</p>
-      </section>
-    
-      <div class="container-editor">
-        <div class="editor__item">
-          <img src="https://pixnio.com/free-images/2017/05/31/2017-05-31-10-27-12.jpg" alt="" class="editor__img">
-          <p class="editor__circle">EXPRESS YOUR STYLE NOW</p>
-        </div>
-        <div class="editor__item">
-          <img src="https://images.pexels.com/photos/261856/pexels-photo-261856.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260" alt="" class="editor__img">
-          <p class="editor__circle">EXPRESS YOUR STYLE NOW</p>
-        </div>
-      </div>
-      <section class="container-tips">
-        <div class="tip">
-          <i class="far fa-hand-paper"></i> 
-          <h2 class="tip__title">Satisfaction Guaranteed</h2>
-          <p class="tip__txt">Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit</p>
-          <a href="" class="btn-shop">SHOP NOW</a>
-        </div>
-        <div class="tip">
-        <i class="fas fa-rocket"></i>
-          <h2 class="tip__title">Fast Shipping</h2>
-          <p class="tip__txt">Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.</p>
-          <a href="" class="btn-shop">SHOP NOW</a>
-        </div>
-        <div class="tip">
-          <i class="fas fa-cog"></i>
-          <h2 class="tip__title">UV Protection</h2>
-          <p class="tip__txt">Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.</p>
-          <a href="" class="btn-shop">SHOP NOW</a>
-        </div>
-      </section>
-    </div>
-  </main>
-  <footer class="main-footer">
-    
-    <div class="footer__section">
-      <h2 class="footer__title">About Us</h2>
-      <p class="footer__txt">Curabitur non nulla sit amet nislinit tempus convallis quis ac lectus. lac inia eget consectetur sed, convallis at tellus. Nulla porttitor accumsana tincidunt.</p>
-    </div>
-    <div class="footer__section">
-      <h2 class="footer__title">Location :</h2>
-      <p class="footer__txt">0926k 4th block building, king Avenue, New York City</p>
-      <h2 class="footer__title">Contact</h2>
-      <p class="footer__txt">Phone : +121 098 8907 9987</p>
-      <p class="footer__txt">Email : info@example.com</p>
-    </div>
-    <div class="footer__section">
-      <h2 class="footer__title">Quick Links</h2>
-      <a href="" class="footer__link">Home</a>
-      <a href="" class="footer__link">About</a>
-      <a href="" class="footer__link">Error</a>
-      <a href="" class="footer__link">Shop</a>
-      <a href="" class="footer__link">Contact Us</a>
-    </div>
-    <div class="footer__section">
-      <h2 class="footer__title">Sign up for your offers</h2>
-      <p class="footer__txt">By subscribing to our mailing list you will always get latest news and updates from us.</p>
-      <input type="email" class="footer__input" placeholder="Enter your email">
-    </div>
-    <p class="copy">© 2021 Goggles. All Rights Reserved | Design by W3Layouts</p>
-  </footer>
-  
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="{% static 'Js/principal.js' %}"></script>
- 
-<body>
+<script>
+
+    const agregarAlCarrito = function(producto_id, csrf_token) {
+    const cantidadInput = $(`#input${producto_id}`);
+    const cantidad = parseInt(cantidadInput.val());
+    cantidad = 1;
+    $.ajax({
+        url: `/agregar_alcarrito/`,
+        type: 'POST',
+        data: {
+            csrfmiddlewaretoken: csrf_token,
+            // Envia los datos del formulario
+            producto_id: producto_id,
+            cantidad: cantidad,
+        },
+        success: function (data) {
+            // Muestra SweetAlert con el mensaje
+            Swal.fire(data.title, data.text, data.icon);
+            // Recarga la página o realiza alguna otra acción si es necesario
+            setTimeout(function () {
+                location.reload();
+            }, 1500); // Recarga la página después de 1.5 segundos
+        },
+        error: function (xhr, status, error) {
+            // Maneja errores si es necesario
+            console.error(xhr.responseText);
+        }
+    });
+}
+const AbrirModalCarrito = function() {
+        
+        // function AbrirModalCarrito() {
+            console.log('probando')
+            $('#carritoModal').modal('show');
+        }
+
+    $(document).ready(function() {
+        $('#btn-carrito').click(function(e) {
+            e.preventDefault();
+            $.ajax({
+                url: "{% url 'carrito' %}",
+                type: 'GET',
+                success: function(data) {
+                    Swal.fire({
+                        title: 'Mi Carrito',
+                        html: data.carrito_html,
+                        showCloseButton: true,
+                        showCancelButton: false,
+                        focusConfirm: false
+                    });
+                },
+                error: function() {
+                    Swal.fire('Error', 'Hubo un error al cargar el carrito', 'error');
+                }
+            });
+        });
+
+    });
+</script>
+
+    </body>
 </html>

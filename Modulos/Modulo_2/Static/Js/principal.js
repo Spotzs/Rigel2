@@ -73,3 +73,25 @@ const agregarAlCarrito = function(producto_id, csrf_token){
         }
     });
 }
+
+$(document).ready(function() {
+    $('#btn-carrito').click(function(e) {
+        e.preventDefault();
+        $.ajax({
+            url: "{% url 'carrito' %}",
+            type: 'GET',
+            success: function(data) {
+                Swal.fire({
+                    title: 'Mi Carrito',
+                    html: data.carrito_html,
+                    showCloseButton: true,
+                    showCancelButton: false,
+                    focusConfirm: false
+                });
+            },
+            error: function() {
+                Swal.fire('Error', 'Hubo un error al cargar el carrito', 'error');
+            }
+        });
+    });
+});

@@ -1,85 +1,318 @@
 {% extends "index.html" %}
 {% load static %}
 
+
 {% block buscador %}
-<form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search"
-method="GET" action="{% url 'buscarestudiante' %}">
-  <div class="input-group">
-    <input type="text" class="form-control bg-light border-0 small" placeholder="Buscar..." name="buscar" value="{{ request.GET.buscar }}">
-    <div class="input-group-append">
-      <button class="btn btn-primary" type="submit">
-        <i class="fas fa-search fa-sm"></i>
-      </button>
+<form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search" method="GET" action="{% url 'buscar_producto' %}">
+    <div class="input-group">
+      <input type="text" class="form-control bg-light border-0 small" placeholder="Buscar..." name="buscar" value="{{ request.GET.buscar }}">
+      <input type="hidden" name="registrosPorPagina" value="{{ registros_por_pagina }}">
+      <input type="hidden" name="page" value="{{ page_obj.number }}">
+      <div class="input-group-append">
+        <button class="btn btn-primary" type="submit">
+          <i class="fas fa-search fa-sm"></i>
+        </button>
+      </div>
     </div>
-  </div>
-</form>
+  </form>
+{% if buscar %}
+    <h3>Resultados de búsqueda para: "{{ buscar }}"</h3>
+{% endif %}
 {% endblock buscador %}
 
 {% block content %}
-  {% if messages %}
-  <div class="alert-container">
-    {% for message in messages %}
-    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-      {{ message }}
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-    {% endfor %}
-  </div>
-  {% endif %}
-  <div class="container py-4">
-    <h2 class="text-center mb-4">Listado de Estudiantes</h2>
-    <div class="row mb-3">
-      <div class="col-md-6"> <!-- Cambiado el tamaño de la columna a 6 -->
-        <a href="{% url 'agregar_estudiante' %}" class="btn btn-primary">Agregar Estudiante</a>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col">
-        <div class="table-responsive">
-          <table class="table table-striped">
-            <thead class="thead-dark">
-              <tr>
-                <th>Id Est</th>
-                <th>Colegio</th>
-                <th>Apellido</th>
-                <th>Nombres</th>
-                <th>Género</th>
-                <th>Grado</th>
-                <th>Teléfono</th>
-                <th>Correo Electrónico</th>
-                <th>Dirección</th>
-                <th>Activo</th>
-                <th>Alergias</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for estudiante in estudiantes %}
-              <tr>
-                <td>{{ estudiante.Id_estudiante }}</td>
-                <td>{{ estudiante.Colegio }}</td>
-                <td>{{ estudiante.Apellido }}</td>
-                <td>{{ estudiante.Nombres }}</td>
-                <td>{{ estudiante.Genero }}</td>
-                <td>{{ estudiante.Grado }}</td>
-                <td>{{ estudiante.Telefono }}</td>
-                <td>{{ estudiante.Correo_electronico }}</td>
-                <td>{{ estudiante.Direccion }}</td>
-                <td>{{ estudiante.Activo }}</td>
-                <td>{{ estudiante.Alergias }}</td>
-                <td>
-                  <a href="{% url 'modificar_estudiante' estudiante.Id_estudiante %}" class="btn btn-info btn-sm">Modificar</a>
-                  <a href="{% url 'eliminar_estudiante' estudiante.Id_estudiante %}" class="btn btn-danger btn-sm">Eliminar</a>
-                </td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
+<div class="container py-4">
+    <h2 class="text-center mb-4">Listado de Clientes</h2>
+
+    <div class="mb-3">
+        {% if perms.Modulo_1.add_cliente %}
+        <button type="button" class="btn btn-primary btn-sm mr-2" data-toggle="modal" data-target="#agregarClienteModal">
+            <i class="fas fa-plus mr-1"></i> Agregar
+        </button>
+        {% endif %}
+        
+        <div class="dropdown mr-2 d-inline-block">
+            <button class="btn btn-success btn-sm dropdown-toggle" type="button" id="exportarDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-file-export mr-1"></i> Exportar
+            </button>
+            <div class="dropdown-menu" aria-labelledby="exportarDropdown">
+                <a class="dropdown-item" href="#" onclick="exportarArchivo('csv')">CSV</a>
+                <a class="dropdown-item" href="#" onclick="exportarArchivo('pdf')">PDF</a>
+                <a class="dropdown-item" href="#" onclick="exportarArchivo('excel')">Excel</a>
+            </div>
         </div>
+    </div>
+
+    <form method="get" action="{% url 'listado_cliente' %}" id="formRegistrosPorPagina" class="form-inline mb-3">
+        <div class="form-group mr-2">
+            <label for="registrosPorPagina" class="mr-2">Registros por página:</label>
+            <div class="input-group input-group-sm">
+                <input type="number" class="form-control" id="registrosPorPagina" name="registrosPorPagina" value="{{ registros_por_pagina }}" min="1" style="max-width: 80px;">
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i></button>
+                </div>
+            </div>
+        </div>
+    </form>
+    
+    <button type="button" class="btn btn-primary btn-sm mr-2" data-toggle="modal" data-target="#carritoModal">
+        <i class="fas fa-plus mr-1"></i> Agregar
+    </button>
+    {% if clientes %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                      <th>Codigo</th>
+                      <th>Tipo</th>
+                      <th>Colegio</th>
+                      <th>Apellido</th>
+                      <th>Nombres</th>
+                      <th>Género</th>
+                      <th>Grado</th>
+                      <th>Teléfono</th>
+                      <th>Correo Electrónico</th>
+                      <th>Dirección</th>
+                      <th>Alergias</th>
+                      <th>Activo</th>
+                      <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cliente in clientes %}
+                        <tr>
+                          <td>{{ cliente.pk }}</td>
+                          <td>{{ cliente.tipo }}</td>
+                          <td>{{ cliente.colegio }}</td>
+                          <td>{{ cliente.usuario.last_name }}</td>
+                          <td>{{ cliente.usuario.first_name }}</td>
+                          <td>{{ cliente.genero }}</td>
+                          <td>{{ cliente.grado }}</td>
+                          <td>{{ cliente.telefono }}</td>
+                          <td>{{ cliente.usuario.email }}</td>
+                          <td>{{ cliente.direccion }}</td>
+                          <td>{{ cliente.alergias }}</td>
+                          <td>{{ cliente.activo }}</td>
+                            <td>
+                                {% if perms.Modulo_1.change_producto %}
+                                <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#edicionModal{{ cliente.pk }}" data-url="{% url 'modificar_cliente' cliente.pk %}">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                {% endif %}
+
+                                {% if perms.Modulo_1.delete_producto %}
+                                <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal{{ cliente.pk }}">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                                {% endif %}
+                            </td>
+                            
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                
+            </table>
+        </div>
+        {% include 'paginator.html' with queryset=clientes %}
+    {% else %}
+        <div class="text-center mt-5">
+            <p class="display-4 text-danger">No hay clientes disponibles.</p>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Add the modal-header and modal-footer to the modal -->
+<div class="modal fade" id="carritoModal" role="dialog" tabindex="-1" aria-labelledby="carritoModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="carritoModalLabel">Carrito de Compras</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- The content of the modal will be loaded here -->
+      </div>
+      <div class="modal-footer">
+        <form method="post" action="{% url 'realizar_pedido' %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-primary">Realizar Pedido</button>
+      </form>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
       </div>
     </div>
   </div>
+</div>
+
+
+<!-- Modal para agregar producto -->
+<div class="modal fade" id="agregarClienteModal" role="dialog"> 
+    
+<!-- Modal para modificar producto -->
+<div id="editarClienteModal" role="dialog"></div>
+
+
+
 {% endblock %}
 
+{% block extrajs %}
+<script type="text/javascript">
+    var $ = jQuery.noConflict();
+
+    function AbrirModalEliminacion(url) {
+        $('#deleteModalContent').load(url, function() {
+            $('#deleteModal').modal('show');
+        });
+    }
+
+    function AbrirModalEdicion(url, clienteId) {
+        $('#editarClienteModal').load(url, function() {
+            $('#edicionModal' + clienteId).modal('show');
+        });
+    }
+
+    function AbrirModalAgregar() {
+        $('#agregarClienteModal').load("{% url 'agregar_cliente' %}", function() {
+            $('#agregarClienteModal').modal('show');
+        });
+    }
+
+    function guardarCambios(clienteId) {
+        $('#edicionModal').modal('hide');
+        $('#productTable').load(document.URL +  ' #productTable'); // Reload the table
+    }
+
+    $(document).ready(function() {
+        // Evento para abrir el modal de modificación al hacer clic en el botón "Modificar"
+        $('.btn-info').click(function() {
+            var url = $(this).data('url');
+            var clienteId = $(this).closest('tr').find('td:first').text(); // Obtener el Id_producto de la fila actual
+            AbrirModalEdicion(url, clienteId);
+        });
+
+        // Evento para abrir el modal de agregar producto al hacer clic en el botón "Agregar Producto"
+        $('.btn-primary').click(function() {
+            AbrirModalAgregar();
+        });
+    });
+
+    $(document).ready(function() {
+    // Verifica si hay un mensaje de éxito y muestra SweetAlert
+    {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == 'success' %}
+                    Swal.fire({
+                        title: '¡Éxito!',
+                        text: '{{ message }}',
+                        icon: 'success'
+                    });
+                {% elif message.tags == 'error' %}
+                    Swal.fire({
+                        title: 'Error',
+                        text: '{{ message }}',
+                        icon: 'error'
+                    });
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
+        // Resto de tu código JavaScript...
+    });
+    
+
+    function eliminarCliente(pk) {
+        // Realiza una solicitud AJAX para eliminar el producto
+        $.ajax({
+            url: `/eliminar_cliente/${pk}`,
+            type: 'POST',
+            data: {
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            success: function (data) {
+                // Muestra SweetAlert con el mensaje
+                Swal.fire(data.title, data.text, data.icon);
+                // Recarga la página o realiza alguna otra acción si es necesario
+                setTimeout(function () {
+                    location.reload();
+                }, 1500); // Recarga la página después de 1.5 segundos
+            },
+            error: function (xhr, status, error) {
+                // Maneja errores si es necesario
+                console.error(xhr.responseText);
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        // Evento para abrir el modal de modificación al hacer clic en el botón "Modificar"
+        $('.btn-info').click(function() {
+            var url = $(this).data('url');
+            var clienteId = $(this).closest('tr').find('td:first').text(); // Obtener el Id_producto de la fila actual
+            AbrirModalEdicion(url, clienteId);
+        });
+
+
+        
+
+        // Evento para confirmar la eliminación del producto al hacer clic en el botón "Eliminar"
+        $('.btn-danger').click(function() {
+            var pk = $(this).closest('tr').find('td:first').text(); // Obtener el Id_producto de la fila actual
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: 'Esta acción no se puede deshacer.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sí, eliminar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                  eliminarCliente(pk); // Llama a la función para eliminar el producto
+                }
+            });
+        });
+    });
+
+        $(document).ready(function() {
+            $('#formRegistrosPorPagina').on('submit', function(e) {
+                e.preventDefault();
+                var registrosPorPagina = $('#registrosPorPagina').val();
+                var pageNumber = '{% if page_obj.number %}{{ page_obj.number }}{% else %}1{% endif %}';
+                var url = '{% url 'listado_cliente' %}?registrosPorPagina=' + registrosPorPagina + '&page=' + pageNumber;
+                window.location.href = url;
+            });
+
+            $('#registrosPorPagina').on('keypress', function(e) {
+                if (e.which === 13) { // 13 es el código de la tecla Enter
+                    $('#formRegistrosPorPagina').trigger('submit');
+                }
+            });
+        });
+
+        function exportarArchivo(formato) {
+        var url = "{% url 'exportar_listado' %}?formato=" + formato;
+        window.open(url, '_blank');
+        Swal.fire({
+            title: '¡Archivo exportado!',
+            text: 'El archivo se ha descargado correctamente.',
+            icon: 'success',
+            confirmButtonText: 'Aceptar'
+        });
+    }
+
+    function AbrirModalCarrito() {
+    $.ajax({
+        url: "{% url 'carrito' %}",
+        success: function(data) {
+            $('#carritoModal .modal-body').html(data);
+            $('#carritoModal').modal('show');
+        }
+    });
+}
+
+    $('.btn-primary').click(function() {
+            AbrirModalCarrito();
+        });
+</script>
+{% endblock extrajs %}

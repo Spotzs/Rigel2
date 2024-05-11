@@ -1,0 +1,29 @@
+<!-- {% extends 'landing.html' %}
+{% block content %}
+  <h1>Mi Carrito</h1>
+  {% if detalles_pedido %}
+    <table>
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>Cantidad</th>
+          <th>Precio Unitario</th>
+          <th>Precio Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for detalle in detalles_pedido %}
+          <tr>
+            <td>{{ detalle.producto.nombre }}</td>
+            <td>{{ detalle.cantidad }}</td>
+            <td>{{ detalle.producto.precio }}</td>
+            <td>{{ detalle.precio_total }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <p>Total del Pedido: {{ pedido.get_total }}</p>
+  {% else %}
+    <p>Tu carrito está vacío.</p>
+  {% endif %}
+{% endblock %} -->

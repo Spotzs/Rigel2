@@ -35,6 +35,7 @@ class Grado(models.Model):
 
 
 class Cliente(models.Model):
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE)
     colegio = models.ForeignKey(Colegio, on_delete=models.CASCADE)
     genero = models.CharField(max_length=1, choices=[('M', 'Masculino'), ('F', 'Femenino'), ('O', 'Otro')])
     grado = models.ForeignKey(Grado, on_delete=models.SET_NULL, null=True, blank=True)
@@ -44,6 +45,8 @@ class Cliente(models.Model):
     alergias = models.CharField(max_length=50, null=True, blank=True)
     tipo = models.CharField(max_length=10, choices=[('PROFESOR', 'Profesor'), ('ESTUDIANTE', 'cliente')], default='ESTUDIANTE')
 
+    def __str__(self):
+        return self.usuario.first_name
 
 class Empleado(models.Model):
     usuario = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -54,7 +57,7 @@ class Empleado(models.Model):
     activo = models.BooleanField(default=True)
 
     def __str__(self):
-        return "{0}, {1}".format(self.Apellido_paterno, self.Nombres)
+        return "{0}, {1}".format(self.last_name, self.first_name)
 
 
 # Tabla para almacenar información sobre los proveedores de productos
@@ -66,7 +69,7 @@ class Proveedor(models.Model):
     correo_electronico = models.EmailField(max_length=50)
     contacto = models.CharField(max_length=35)
     activo = models.BooleanField(default=True)
-    
+
     def __str__(self):
         return self.nombre
 
@@ -91,7 +94,7 @@ class Categoria(models.Model):
     descripcion = models.CharField(max_length=255)  # Descripción de la categoría
 
     def __str__(self):
-        return self.Nombre_categoria
+        return self.nombre
 
 # Tabla para almacenar comentarios de los estudiantes y profesores sobre los productos
 class ComentarioProducto(models.Model):
@@ -138,7 +141,7 @@ class DetallePedido(models.Model):
     precio_total = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
-        return "Detalle pedido {0}".format(self.Pedido)
+        return "Detalle pedido {0}".format(self.pedido)
 
 # Tabla para almacenar el historial de entregas de los pedidos
 class HistorialPedido(models.Model):
@@ -147,7 +150,7 @@ class HistorialPedido(models.Model):
     estado_entrega = models.CharField(max_length=10)
 
     def __str__(self):
-        return "Historial pedido {0}".format(self.Pedido)
+        return "Historial pedido {0}".format(self.pk)
 
 
 # Tabla para almacenar información sobre los almuerzos pedidos por los estudiantes
@@ -158,20 +161,20 @@ class Almuerzo(models.Model):
     precio = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
-        return "Almuerzo {0} de {1}".format(self.Id_almuerzo, self.Estudiante)
+        return "Almuerzo {0} de {1}".format(self.pk, self.cliente)
 
 
 # Tabla para almacenar información sobre los padres de los estudiantes
 class Padre(models.Model):
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE)
     cliente = models.OneToOneField(Cliente, on_delete=models.CASCADE)
     hijos = models.ManyToManyField(Cliente, related_name='padres')
     telefono = models.CharField(max_length=15)
     recomendaciones = models.CharField(max_length=255)
 
     def __str__(self):
-        return self.first_name
+        return self.usuario.first_name
 
-    def get_cliente(self):
-        return Cliente.objects.get(id=self.cliente_id)
+    # def get_cliente(self):
+    #     return Cliente.objects.get(id=self.cliente_id)
 
-# recomendaciones de no darle al estudiante, quitar las contraseñas, hacer una tabla de almuerzos y de padres (padres, por las alergias que pueden contener los estudiantes)

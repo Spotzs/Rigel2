@@ -1,4 +1,4 @@
-<div class="modal fade" id="edicionModal{{ empleado.Id_empleado }}" tabindex="-1" role="dialog" aria-labelledby="edicionModalLabel{{ empleado.Id_empleado }}" aria-hidden="true">
+<div class="modal fade" id="edicionModal{{ empleado.pk }}" tabindex="-1" role="dialog" aria-labelledby="edicionModalLabel{{ empleado.pk }}" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -8,7 +8,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form method="POST" id="formModificarEmpleado" action="{% url 'modificar_empleado' empleado.Id_empleado %}">
+                <form method="POST" id="formModificarEmpleado" action="{% url 'modificar_empleado' empleado.pk %}">
                     {% csrf_token %}
                     {{ form.as_p }}
                     <button type="submit" class="btn btn-primary">Guardar cambios</button>

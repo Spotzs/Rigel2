@@ -99,7 +99,7 @@
                                 {% endif %}
 
                                 {% if perms.Modulo_1.delete_producto %}
-                                <button type="button" class="btn btn-danger btn-sm" onclick="eliminarProducto('{{ proveedor.pk }}', '{{ csrf_token}}');">
+                                <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal{{ producto.pk }}">
                                     <i class="fas fa-trash"></i>
                                 </button>
                                 {% endif %}
@@ -195,10 +195,10 @@
     });
     
 
-    function eliminarProducto(Id_producto) {
+    function eliminarProducto(pk) {
         // Realiza una solicitud AJAX para eliminar el producto
         $.ajax({
-            url: `/eliminar_producto/${Id_producto}`,
+            url: `/eliminar_producto/${pk}`,
             type: 'POST',
             data: {
                 csrfmiddlewaretoken: '{{ csrf_token }}'
@@ -231,7 +231,8 @@
 
         // Evento para confirmar la eliminación del producto al hacer clic en el botón "Eliminar"
         $('.btn-danger').click(function() {
-            var Id_producto = $(this).closest('tr').find('td:first').text(); // Obtener el Id_producto de la fila actual
+            var pk = $(this).closest('tr').find('td:first').text(); // Obtener el Id_producto de la fila actual
+            console.log(pk)
             Swal.fire({
                 title: '¿Estás seguro?',
                 text: 'Esta acción no se puede deshacer.',
@@ -242,7 +243,7 @@
                 confirmButtonText: 'Sí, eliminar'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    eliminarProducto(Id_producto); // Llama a la función para eliminar el producto
+                    eliminarProducto(pk); // Llama a la función para eliminar el producto
                 }
             });
         });

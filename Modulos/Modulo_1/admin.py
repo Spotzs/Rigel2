@@ -81,14 +81,32 @@ class ProductoAdmin(admin.ModelAdmin):
 
 @admin.register(Pedido)
 class PedidoAdmin(admin.ModelAdmin):
-    list_display = ['id', 'cliente', 'empleado', 'categoria', 'fecha', 'estado', calcular_total_pedido]
-    search_fields = ['id', 'cliente__firt_name']
+    list_display = ['id', 'get_first_name', 'empleado', 'categoria', 'fecha', 'estado', calcular_total_pedido]
+    search_fields = ['id', 'cliente']
     list_filter = ['estado']
     ordering = ['-fecha']
     readonly_fields = ['fecha']
     inlines = [DetallePedidoInline]
     raw_id_fields = ['cliente', 'empleado']
     autocomplete_fields = ['categoria']
+
+    def get_first_name(self, obj):
+        return obj.cliente.usuario.first_name
+    
+    def get_last_name(self, obj):
+        return obj.cliente.usuario.last_name
+    
+    def email(self, obj):
+        return obj.cliente.usuario.email
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        if change and obj.estado != obj._original_estado:
+            HistorialPedido.objects.create(
+                pedido=obj,
+                fecha_entrega=date.today(),
+                estado_entrega=obj.estado
+            )
 
 @admin.register(Aniolectivo)
 class AniolectivoAdmin(admin.ModelAdmin):

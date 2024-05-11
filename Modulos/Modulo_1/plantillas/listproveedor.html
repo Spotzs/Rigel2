@@ -22,7 +22,7 @@
 
 {% block content %}
 <div class="container py-4">
-    <h2 class="text-center mb-4">Listado de Productos</h2>
+    <h2 class="text-center mb-4">Listado de Proveedores</h2>
 
     <div class="mb-3">
         {% if perms.Modulo_1.add_proveedor %}
@@ -184,10 +184,10 @@
     });
     
 
-    function eliminarProducto(Id_producto) {
+    function eliminarProveedor(pk) {
         // Realiza una solicitud AJAX para eliminar el producto
         $.ajax({
-            url: `/eliminar_proveedor/${Id_producto}`,
+            url: `/eliminar_proveedor/${pk}`,
             type: 'POST',
             data: {
                 csrfmiddlewaretoken: '{{ csrf_token }}'
@@ -212,7 +212,7 @@
         $('.btn-info').click(function() {
             var url = $(this).data('url');
             var productId = $(this).closest('tr').find('td:first').text(); // Obtener el Id_producto de la fila actual
-            AbrirModalEdicion(url, productId);
+            AbrirModalEdicion(url, proveedorId);
         });
 
 
@@ -220,7 +220,8 @@
 
         // Evento para confirmar la eliminación del producto al hacer clic en el botón "Eliminar"
         $('.btn-danger').click(function() {
-            var Id_producto = $(this).closest('tr').find('td:first').text(); // Obtener el Id_producto de la fila actual
+            var pk = $(this).closest('tr').find('td:first').text(); // Obtener el Id_producto de la fila actual
+            console.log(pk)
             Swal.fire({
                 title: '¿Estás seguro?',
                 text: 'Esta acción no se puede deshacer.',
@@ -231,7 +232,7 @@
                 confirmButtonText: 'Sí, eliminar'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    eliminarProducto(Id_producto); // Llama a la función para eliminar el producto
+                    eliminarProveedor(pk); // Llama a la función para eliminar el producto
                 }
             });
         });
@@ -242,7 +243,7 @@
                 e.preventDefault();
                 var registrosPorPagina = $('#registrosPorPagina').val();
                 var pageNumber = '{% if page_obj.number %}{{ page_obj.number }}{% else %}1{% endif %}';
-                var url = '{% url 'listado_producto' %}?registrosPorPagina=' + registrosPorPagina + '&page=' + pageNumber;
+                var url = '{% url 'listado_proveedor' %}?registrosPorPagina=' + registrosPorPagina + '&page=' + pageNumber;
                 window.location.href = url;
             });
 

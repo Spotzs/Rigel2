@@ -6,6 +6,17 @@ class ClienteForm(forms.ModelForm):
     class Meta:
         model = Cliente
         fields = '__all__'
+        widgets = {
+            'usuario': forms.Select(attrs={'class': 'form-control'}),
+            'colegio': forms.Select(attrs={'class': 'form-control'}),
+            'genero': forms.Select(attrs={'class': 'form-control'}),
+            'grado': forms.Select(attrs={'class': 'form-control'}),
+            'telefono': forms.NumberInput(attrs={'class': 'form-control'}),
+            'direccion': forms.TextInput(attrs={'class': 'form-control'}),
+            'activo  ': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'alergias': forms.TextInput(attrs={'class': 'form-control'}),
+            'tipo': forms.Select(attrs={'class': 'form-control'})  # Para cargar imagen
+        }
 
 # Formulario para el modelo Colegio
 class ColegioForm(forms.ModelForm):
@@ -48,6 +59,8 @@ class AniolectivoForm(forms.ModelForm):
         model = Aniolectivo
         fields = '__all__'
         widgets = {
+            'Codigo': forms.TextInput(attrs={'class': 'form-control'}),
+            'Nombre': forms.TextInput(attrs={'class': 'form-control'}),
             'Fecha_inicio': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'Fecha_fin': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
         }

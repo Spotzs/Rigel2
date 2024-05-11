@@ -182,6 +182,23 @@ def listado_cliente(request):
 
     return render(request, 'listclientes.html', context)
 
+@permission_required('Modulo_1.view_padre', login_url='/login/')
+def listado_padre(request):
+    padres = Padre.objects.all()
+    registros_por_pagina = int(request.GET.get('registrosPorPagina', 5))  
+    paginator = Paginator(padres, registros_por_pagina)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'padres': page_obj,
+        'paginator': paginator,
+        'page_obj': page_obj,
+        'registros_por_pagina': registros_por_pagina,  # Agregar el valor de registros_por_pagina al contexto
+    }
+
+    return render(request, 'listpadre.html', context)
+
 @permission_required('Modulo_1.view_colegio', login_url='/login/')
 def listado_colegio(request):
     colegios = Colegio.objects.all()
@@ -200,15 +217,39 @@ def listado_colegio(request):
     return render(request, 'listcole.html', context)
 
 
-@permission_required('Modulo_1.view_grado', login_url='/login/')
+@permission_required('Modulo_1.view_grados', login_url='/login/')
 def listado_grado(request):
     grados = Grado.objects.all()
-    return render(request, "modals/Grados/listgrado.html", {'grados': grados})
+    registros_por_pagina = int(request.GET.get('registrosPorPagina', 5))  
+    paginator = Paginator(grados, registros_por_pagina)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'grados': page_obj,
+        'paginator': paginator,
+        'page_obj': page_obj,
+        'registros_por_pagina': registros_por_pagina,
+    }
+
+    return render(request, 'listgrado.html', context)
 
 @permission_required('Modulo_1.view_aniolectivo', login_url='/login/')
 def listado_aniolectivo(request):
-    anioslectivos = Aniolectivo.objects.all()
-    return render(request, "modals/Lectivo/listlectivo.html", {'anioslectivos': anioslectivos})
+    aniolectivos = Aniolectivo.objects.all()
+    registros_por_pagina = int(request.GET.get('registrosPorPagina', 5))  
+    paginator = Paginator(aniolectivos, registros_por_pagina)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'aniolectivos': page_obj,
+        'paginator': paginator,
+        'page_obj': page_obj,
+        'registros_por_pagina': registros_por_pagina,
+    }
+
+    return render(request, 'listlectivo.html', context)
 
 @permission_required('Modulo_1.view_proveedor', login_url='/login/')
 def listado_proveedor(request):
@@ -357,6 +398,27 @@ def agregar_producto(request):
     return render(request, 'modals/Productos/agregar_producto.html', {'form': form})
 
 @login_required
+def agregar_cliente(request):
+
+    if not request.user.has_perm('Modulo_1.add_cliente'):
+        return redirect('/login/?denied=true')
+
+    current_page = request.META.get('HTTP_REFERER')  # Obtener la URL de la página actual
+
+    if request.method == 'POST':
+        form = ClienteForm(request.POST, files=request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Cliente agregado correctamente")
+            return redirect(current_page)
+        else:
+            messages.error(request, "Error al agregar el Cliente")
+    else:
+        form = ClienteForm()
+
+    return render(request, 'modals/Cliente/agregar_cliente.html', {'form': form})
+
+@login_required
 def agregar_colegio(request):
 
     if not request.user.has_perm('Modulo_1.add_colegio'):
@@ -381,17 +443,19 @@ def agregar_grado(request):
     if not request.user.has_perm('Modulo_1.add_grado'):
         return redirect('/login/?denied=true')
 
+    current_page = request.META.get('HTTP_REFERER')  # Obtener la URL de la página actual
+
     if request.method == 'POST':
         form = GradoForm(request.POST, files=request.FILES)
         if form.is_valid():
             form.save()
             messages.success(request, "Grado agregado correctamente")
-            return redirect('listado_grado')
+            return redirect(current_page)
         else:
-            messages.error(request, "Error al agregar el grado")
+            messages.error(request, "Error al agregar el Grado")
     else:
         form = GradoForm()
-    
+
     return render(request, 'modals/Grados/agregar_grado.html', {'form': form})
 
 @login_required
@@ -400,18 +464,21 @@ def agregar_aniolectivo(request):
     if not request.user.has_perm('Modulo_1.add_aniolectivo'):
         return redirect('/login/?denied=true')
 
+    current_page = request.META.get('HTTP_REFERER')  # Obtener la URL de la página actual
+
     if request.method == 'POST':
         form = AniolectivoForm(request.POST, files=request.FILES)
         if form.is_valid():
             form.save()
             messages.success(request, "Año lectivo agregado correctamente")
-            return redirect('listado_aniolectivo')
+            return redirect(current_page)
         else:
             messages.error(request, "Error al agregar el Año")
     else:
         form = AniolectivoForm()
-    
+
     return render(request, 'modals/Lectivo/agregar_aniolectivo.html', {'form': form})
+
 
 @login_required
 def agregar_proveedor(request):
@@ -433,22 +500,25 @@ def agregar_proveedor(request):
     return render(request, 'modals/Proveedor/agregar_proveedor.html', {'form': form})
 
 @login_required
-def modificar_estudiante(request, Id_estudiante):
+def modificar_cliente(request, pk):
 
-    if not request.user.has_perm('Modulo_1.change_estudiante'):
+    if not request.user.has_perm('Modulo_1.change_cliente'):
         return redirect('/login/?denied=true')
 
-    estudiante = get_object_or_404(Estudiante, Id_estudiante=Id_estudiante)
-    form = EstudianteForm(instance=estudiante)
+    cliente = get_object_or_404(Cliente, pk=pk)
+    form = ClienteForm(instance=cliente)
+    current_page = request.META.get('HTTP_REFERER')  # Obtener la URL de la página actual
 
     if request.method == 'POST':
-        form = EstudianteForm(request.POST, instance=estudiante, files=request.FILES)
+        form = ClienteForm(request.POST, request.FILES, instance=cliente)
         if form.is_valid():
             form.save()
-            messages.success(request, "Estudiante modificado correctamente")
-            return redirect('listado_estudiante')
-    
-    return render(request, 'modificarestudiante.html', {'form': form})
+            messages.success(request, "Cliente modificado correctamente")
+            return redirect(current_page)
+        else:
+            messages.error(request, "Error al modificar el Cliente")
+
+    return render(request, 'modals/Cliente/modificar_cliente.html', {'form': form, 'cliente': cliente})
 
 @login_required
 def modificar_empleado(request, Id_empleado):
@@ -479,15 +549,18 @@ def modificar_grado(request, Codigo):
 
     grado = get_object_or_404(Grado, Codigo=Codigo)
     form = GradoForm(instance=grado)
+    current_page = request.META.get('HTTP_REFERER')  # Obtener la URL de la página actual
 
     if request.method == 'POST':
-        form = GradoForm(request.POST, instance=grado, files=request.FILES)
+        form = GradoForm(request.POST, request.FILES, instance=grado)
         if form.is_valid():
             form.save()
             messages.success(request, "Grado modificado correctamente")
-            return redirect('listado_grado')
-    
-    return render(request, 'modals/Grados/modificar_grado.html', {'form': form})
+            return redirect(current_page)
+        else:
+            messages.error(request, "Error al modificar el Grado")
+
+    return render(request, 'modals/Grados/modificar_grado.html', {'form': form, 'grado': grado})
 
 @login_required
 def modificar_colegio(request, Codigo):
@@ -497,15 +570,18 @@ def modificar_colegio(request, Codigo):
 
     colegio = get_object_or_404(Colegio, Codigo=Codigo)
     form = ColegioForm(instance=colegio)
+    current_page = request.META.get('HTTP_REFERER')  # Obtener la URL de la página actual
 
     if request.method == 'POST':
-        form = ColegioForm(request.POST, instance=colegio, files=request.FILES)
+        form = ColegioForm(request.POST, request.FILES, instance=colegio)
         if form.is_valid():
             form.save()
-            messages.success(request, "Grado modificado correctamente")
-            return redirect('listado_colegio')
-    
-    return render(request, 'modals/Colegio/modificar_colegio.html', {'form': form})
+            messages.success(request, "Colegio modificado correctamente")
+            return redirect(current_page)
+        else:
+            messages.error(request, "Error al modificar el Colegio")
+
+    return render(request, 'modals/Colegio/modificar_colegio.html', {'form': form, 'colegio': colegio})
 
 @login_required
 def modificar_aniolectivo(request, Codigo):
@@ -515,15 +591,18 @@ def modificar_aniolectivo(request, Codigo):
 
     aniolectivo = get_object_or_404(Aniolectivo, Codigo=Codigo)
     form = AniolectivoForm(instance=aniolectivo)
+    current_page = request.META.get('HTTP_REFERER')  # Obtener la URL de la página actual
 
     if request.method == 'POST':
-        form = AniolectivoForm(request.POST, instance=aniolectivo, files=request.FILES)
+        form = AniolectivoForm(request.POST, request.FILES, instance=aniolectivo)
         if form.is_valid():
             form.save()
-            messages.success(request, "Año lectivo modificado correctamente")
-            return redirect('listado_aniolectivo')
-    
-    return render(request, 'modals/Lectivo/modificar_aniolectivo.html', {'form': form})
+            messages.success(request, "Año modificado correctamente")
+            return redirect(current_page)
+        else:
+            messages.error(request, "Error al modificar el Año")
+
+    return render(request, 'modals/Lectivo/modificar_aniolectivo.html', {'form': form, 'aniolectivo': aniolectivo})
 
 # def modificar_aniolectivo(request, Codigo):
 #     aniolectivo = get_object_or_404(Aniolectivo, Codigo=Codigo)
@@ -538,16 +617,22 @@ def modificar_aniolectivo(request, Codigo):
     
 #     return render(request, 'modals/Colegio/modificar_colegio.html', {'form': form})
 
-@login_required
-def eliminar_estudiante(request, Id_estudiante):
+@login_required 
+def eliminar_cliente(request, pk):
 
-    if not request.user.has_perm('Modulo_1.delete_estudiante'):
+    if not request.user.has_perm('Modulo_1.delete_cliente'):
         return redirect('/login/?denied=true')
 
-    estudiante = get_object_or_404(Estudiante, Id_estudiante=Id_estudiante)
-    estudiante.delete()
-    messages.success(request, "Estudiante eliminado correctamente")
-    return redirect('listado_estudiante')
+    cliente = get_object_or_404(Cliente, pk=pk)
+    cliente_nombre = cliente.usuario.first_name  # Guarda el nombre del producto antes de eliminarlo
+    cliente.delete()
+    # SweetAlert message
+    swal_data = {
+        'title': 'Cliente eliminado!',
+        'text': f'El Cliente "{cliente_nombre}" ha sido eliminado correctamente.',
+        'icon': 'success',
+    }
+    return JsonResponse(swal_data)
 
 @login_required 
 def eliminar_empleado(request, Id_empleado):
@@ -573,7 +658,7 @@ def eliminar_proveedor(request, pk):
     if not request.user.has_perm('Modulo_1.delete_proveedor'):
         return redirect('/login/?denied=true')
 
-    proveedor = get_object_or_404(Proveedor, id=pk)
+    proveedor = get_object_or_404(Proveedor, pk=pk)
     proveedor_nombre = proveedor.nombre  
     proveedor.delete()
 
@@ -582,7 +667,58 @@ def eliminar_proveedor(request, pk):
         'text': f'El proveedor "{proveedor_nombre}" ha sido eliminado correctamente.',
         'icon': 'success',
     }
+    print('mensaje')
+    return JsonResponse(swal_data)
 
+@login_required 
+def eliminar_aniolectivo(request, Codigo):
+
+    if not request.user.has_perm('Modulo_1.delete_aniolectivo'):
+        return redirect('/login/?denied=true')
+
+    aniolectivo = get_object_or_404(Aniolectivo, Codigo=Codigo)
+    aniolectivo_nombre = aniolectivo.Nombre  # Guarda el nombre del producto antes de eliminarlo
+    aniolectivo.delete()
+    # SweetAlert message
+    swal_data = {
+        'title': 'Año eliminado!',
+        'text': f'El Año "{aniolectivo_nombre}" ha sido eliminado correctamente.',
+        'icon': 'success',
+    }
+    return JsonResponse(swal_data)
+
+@login_required 
+def eliminar_grado(request, Codigo):
+
+    if not request.user.has_perm('Modulo_1.delete_grado'):
+        return redirect('/login/?denied=true')
+
+    grado = get_object_or_404(Grado, Codigo=Codigo)
+    grado_nombre = grado.Nombre  # Guarda el nombre del producto antes de eliminarlo
+    grado.delete()
+    # SweetAlert message
+    swal_data = {
+        'title': 'Grado eliminado!',
+        'text': f'El grado "{grado_nombre}" ha sido eliminado correctamente.',
+        'icon': 'success',
+    }
+    return JsonResponse(swal_data)
+
+@login_required 
+def eliminar_colegio(request, Codigo):
+
+    if not request.user.has_perm('Modulo_1.delete_colegio'):
+        return redirect('/login/?denied=true')
+
+    colegio = get_object_or_404(Colegio, Codigo=Codigo)
+    colegio_nombre = colegio.Nombre  # Guarda el nombre del producto antes de eliminarlo
+    colegio.delete()
+    # SweetAlert message
+    swal_data = {
+        'title': 'Colegio eliminado!',
+        'text': f'El colegio "{colegio_nombre}" ha sido eliminado correctamente.',
+        'icon': 'success',
+    }
     return JsonResponse(swal_data)
 
 def buscarestudiante(request):
@@ -650,13 +786,13 @@ def buscar_lectivo(request):
     return render(request, "modals/Lectivo/listlectivo.html", {"anioslectivos": anioslectivos})
 
 @login_required 
-def eliminar_producto(request, Id_producto):
+def eliminar_producto(request, pk):
 
     if not request.user.has_perm('Modulo_1.delete_producto'):
         return redirect('/login/?denied=true')
 
-    producto = get_object_or_404(Producto, Id_producto=Id_producto)
-    producto_nombre = producto.Nombre  # Guarda el nombre del producto antes de eliminarlo
+    producto = get_object_or_404(Producto, pk=pk)
+    producto_nombre = producto.nombre  # Guarda el nombre del producto antes de eliminarlo
     producto.delete()
     # SweetAlert message
     swal_data = {
@@ -664,7 +800,7 @@ def eliminar_producto(request, Id_producto):
         'text': f'El producto "{producto_nombre}" ha sido eliminado correctamente.',
         'icon': 'success',
     }
-    # Devuelve la respuesta en formato JSON
+    print('mensaje')
     return JsonResponse(swal_data)
 
 @login_required
@@ -790,44 +926,72 @@ def buscar_pedido(request):
 
 
 def agregar_alcarrito(request):
-    cliente_id = request.user.id
+    usuario_id = request.user.id
     cantidad = int(request.POST.get('cantidad'))
     producto_id = int(request.POST.get('producto_id'))
+    cliente = get_object_or_404(Cliente, usuario_id=usuario_id)
     producto = get_object_or_404(Producto, pk=producto_id)
 
-    import pdb; pdb.set_trace(); print('Prueba 1')
-    pedido = Pedido.objects.filter(
-        estado='PENDIENTE', cliente_id=cliente_id).first()
-    import pdb; pdb.set_trace(); print('Prueba 2')
-    if not pedido:
-        pedido = Pedido.objects.create(
-            cliente=cliente_id,
-            estado='PENDIENTE'
-        )
-    import pdb; pdb.set_trace(); print('Prueba 3')
-    detalle_pedido = DetallePedido.objects.filter(
-        pedido=pedido, producto=producto_id).first()
-    precio_total = producto.precio * cantidad
+    pedido, creado = Pedido.objects.get_or_create(
+        cliente=cliente,
+        estado='PENDIENTE',
+    )
 
-    import pdb; pdb.set_trace(); print('Prueba 4')
-    if not detalle_pedido:
-        detalle_pedido = DetallePedido.objects.create(
-            pedido=pedido,
-            producto=producto_id,
-            cantidad=cantidad,
-            precio_total=precio_total
-        )
-    else:
-        detalle_pedido.cantidad = cantidad
-        detalle_pedido.precio_total = precio_total
+    detalle_pedido, creado = DetallePedido.objects.get_or_create(
+        pedido=pedido,
+        producto=producto,
+        defaults={'cantidad': cantidad, 'precio_total': producto.precio * cantidad}
+    )
+
+    if not creado:
+        detalle_pedido.cantidad += cantidad
+        detalle_pedido.precio_total += producto.precio * cantidad
         detalle_pedido.save()
 
-    producto_nombre = producto.nombre  # Guarda el nombre del producto antes de eliminarlo
-    # SweetAlert message
+    producto_nombre = producto.nombre
     swal_data = {
         'title': '¡Producto agregado al carrito!',
         'text': f'El producto "{producto_nombre}" ha sido agregado correctamente.',
         'icon': 'success',
     }
-    # Devuelve la respuesta en formato JSON
     return JsonResponse(swal_data)
+
+from django.db.models import Prefetch
+
+@login_required
+def carrito(request):
+    usuario_id = request.user.id
+    cliente = get_object_or_404(Cliente, usuario_id=usuario_id)
+    pedido = (
+        Pedido.objects.filter(cliente=cliente, estado='PENDIENTE')
+        .select_related('cliente')
+        .prefetch_related(
+            Prefetch('detallepedido_set', queryset=DetallePedido.objects.select_related('producto'))
+        )
+        .first()
+    )
+
+    if pedido:
+        detalles_pedido = pedido.detallepedido_set.all()
+    else:
+        detalles_pedido = []
+
+    context = {
+        'detalles_pedido': detalles_pedido,
+        'pedido': pedido,
+    }
+    return render(request, 'carritoview.html', context)
+
+@login_required
+def realizar_pedido(request):
+    usuario_id = request.user.id
+    cliente = get_object_or_404(Cliente, usuario_id=usuario_id)
+    pedido = Pedido.objects.filter(cliente=cliente, estado='PENDIENTE').first()
+
+    if pedido:
+        pedido.estado = 'EN_PROCESO'  # o 'REALIZADO', según tus preferencias
+        pedido.save()
+        # Aquí puedes agregar cualquier otra lógica necesaria, como enviar un correo electrónico de confirmación, etc.
+
+    return redirect('carrito')
+    

@@ -22,45 +22,74 @@
     {% endfor %}
 {% endif %}
 
-    <div class="container" id="container">
-        <div class="form-container sign-up">
-            <form method="post" action="{% url 'register' %}">
-                {% csrf_token %}
-                <h1>Registrarse</h1>
-                {{ registro_form.username }}
-                {{ registro_form.email }}
-                {{ registro_form.first_name }}
-                {{ registro_form.last_name }}
-                {{ registro_form.password1 }}
-                {{ registro_form.password2 }}
-                <button type="submit">Crear</button>
-            </form>
-        </div>
-        
-        <div class="form-container sign-in">
-            <form method="post" action="{% url 'login' %}">
-                {% csrf_token %}
-                <h1>Inicia Sesión</h1>
-                <input type="text" placeholder="Username" name="username">
-                <input type="password" placeholder="Password" name="password">
-                <button type="submit">Ingresar</button>
-            </form>
-        </div>
-        <div class="toggle-container">
-            <div class="toggle">
-                <div class="toggle-panel toggle-left">
-                    <h1>Welcome Back!</h1>
-                    <p>Enter your personal details to use all of site features</p>
-                    <button class="hidden" id="login">Inicia Sesión</button>
+<div class="container" id="container">
+    <div class="form-container sign-up {% if not login_form.is_bound %}hidden{% endif %}">
+        <form id="signup-form" method="post" action="{% url 'register' %}">
+            {% csrf_token %}
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-step active"></div>
+                    <div class="progress-step"></div>
+                    <div class="progress-step"></div>
                 </div>
-                <div class="toggle-panel toggle-right">
-                    <h1>Hola!</h1>
-                    <p>Register with your personal details to use all of site features</p>
-                    <button class="hidden" id="register">Registrarse</button>
+            </div>
+            <h1>Registrarse</h1>
+            <div class="step-container">
+                <div id="step-1" class="step">
+                    <!-- Contenido del primer paso -->
+                    {{ registro_form.first_name }}
+                    {{ registro_form.last_name }}
+                    {{ registro_form.email }}
+                    {{ registro_form.colegio }}
+                    {{ registro_form.tipo }}
                 </div>
+                <div id="step-2" class="step hidden">
+                    <!-- Contenido del segundo paso -->
+                    {{ registro_form.telefono }}
+                    {{ registro_form.direccion }}
+                    {{ registro_form.genero }}
+                </div>
+                <div id="step-3" class="step hidden">
+                    <!-- Contenido del tercer paso -->
+                    {{ registro_form.username }}
+                    {{ registro_form.password1 }}
+                    {{ registro_form.password2 }}
+                </div>
+            </div>
+            <div class="button-container">
+                <button type="button" id="prevBtn" onclick="nextPrev(-1)">Anterior</button>
+                <button type="button" id="nextBtn" onclick="nextPrev(1)">Siguiente</button>
+                <button type="submit" id="submitBtn">Crear</button>
+            </div>
+        </form>
+    </div>
+    
+    <div class="form-container sign-in">
+        <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+            <h1>Inicia Sesión</h1>
+            <input type="text" placeholder="Username" name="username">
+            <input type="password" placeholder="Password" name="password">
+            <button type="submit">Ingresar</button>
+            <a href="{% url 'landing' %}" type="submit">Volver a la página principal</a>
+        </form>
+    </div>
+    <div class="toggle-container">
+        <div class="toggle">
+            <div class="toggle-panel toggle-left">
+                <h1>Bienvenido Devuelta!</h1>
+                <p>Ingrese sus datos personales para usar todas las funciones del sitio</p>
+                <button class="hidden" id="login">Inicia Sesión</button>
+            </div>
+            <div class="toggle-panel toggle-right">
+                <h1>Hola!</h1>
+                <p>Regístrese con sus datos personales para utilizar todas las funciones del sitio</p>
+                <button class="hidden" id="register">Registrarse</button>
             </div>
         </div>
     </div>
+</div>
+
     
     <script src="{% static 'Js/script.js' %}"></script>
     <!-- Agregar script para mostrar SweetAlert -->
@@ -85,8 +114,66 @@
             showSweetAlert();
         }
     });
-    
-    
+    var currentStep = 0;
+        showStep(currentStep);
+
+        function showStep(step) {
+            var steps = document.querySelectorAll('.step');
+            var progressSteps = document.querySelectorAll('.progress-step');
+
+            steps.forEach(function (stepElem, index) {
+                if (index === step) {
+                    stepElem.style.display = 'block';
+                } else {
+                    stepElem.style.display = 'none';
+                }
+            });
+
+            progressSteps.forEach(function (progressStep, index) {
+                if (index < step) {
+                    progressStep.classList.add('active');
+                } else {
+                    progressStep.classList.remove('active');
+                }
+            });
+
+            if (step === 0) {
+                document.getElementById("prevBtn").style.display = "none";
+            } else {
+                document.getElementById("prevBtn").style.display = "inline-block";
+            }
+
+            if (step === steps.length - 1) {
+                document.getElementById("nextBtn").style.display = "none";
+                document.getElementById("submitBtn").style.display = "inline-block";
+            } else {
+                document.getElementById("nextBtn").style.display = "inline-block";
+                document.getElementById("submitBtn").style.display = "none";
+            }
+        }
+
+        document.getElementById("prevBtn").addEventListener("click", function() {
+            currentStep--;
+            showStep(currentStep);
+        });
+
+        document.getElementById("nextBtn").addEventListener("click", function() {
+            var currentStepFields = document.querySelectorAll('.step:nth-child(' + (currentStep + 1) + ') input, .step:nth-child(' + (currentStep + 1) + ') select');
+            var allFieldsValid = true;
+
+            currentStepFields.forEach(function (field) {
+                if (field.value.trim() === '') {
+                    allFieldsValid = false;
+                }
+            });
+
+            if (allFieldsValid) {
+                currentStep++;
+                showStep(currentStep);
+            } else {
+                alert('Por favor, complete todos los campos del paso actual antes de continuar.');
+            }
+        });
     </script>
 </body>
 </html>
